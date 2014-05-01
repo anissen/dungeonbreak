@@ -1,0 +1,8 @@
+/build/
+
+.*.swp
+._*
+.DS_Store
+RECOVER_*
+node_modules
+webkit
