@@ -21,7 +21,7 @@ import flambe.display.EmitterSprite;
 import flambe.util.Value;
 
 /** Logic for planes. */
-class Map extends Component
+class TileMap extends Component
 {
     public function new (ctx :GameContext, file :String, tileSize :Int, width :Int, height :Int)
     {
@@ -36,8 +36,8 @@ class Map extends Component
     override public function onAdded ()
     {
         tiles = [
-            for (y in 0...5) [ 
-                for (x in 0...7)
+            for (y in 0...7) [ 
+                for (x in 0...5)
                     new Entity() 
             ]
         ];
@@ -56,8 +56,8 @@ class Map extends Component
         var rawlevel :String = _ctx.pack.getFile(_file).toString();
         var lines = rawlevel.split("\n");
 
-        for (y in 0...5) { // TODO: X and Y should be swapped for portrait mode
-            for (x in 0...7) {
+        for (y in 0...7) {
+            for (x in 0...5) {
                 var entity = tiles[y][x];
                 var rotation = Math.floor(Math.random() * 4);
                 var random = Math.random();
@@ -123,13 +123,15 @@ class Map extends Component
                         var playerTileX = playerTileData.tileX;
                         var playerTileY = playerTileData.tileY;
                         var playerSprite = playerEntity.get(Sprite);
-                        if (Math.abs(playerTileX - tileX) + Math.abs(playerTileY - tileY) == 1) {
-                            if (canMoveToTile(playerTileData, tileData)) {
-                                player.moveToTile(tileSprite.owner);
-                                _ctx.playJump();
-                                moves._++;
-                            }
-                        }
+                        var path = getPathTo(tileX, tileY);
+                        trace('path', path);
+                        // if (Math.abs(playerTileX - tileX) + Math.abs(playerTileY - tileY) == 1) {
+                        //     if (canMoveToTile(playerTileData, tileData)) {
+                        //         player.moveToTile(tileSprite.owner);
+                        //         _ctx.playJump();
+                        //         moves._++;
+                        //     }
+                        // }
                         return;
                     }
                     if (Math.abs(tileX - startTileX) != 0 && Math.abs(tileY - startTileY) != 0) return;
@@ -209,9 +211,53 @@ class Map extends Component
         ]));
     }
 
+    private function getPathTo(x: Int, y :Int) {
+        function tileIdToXY(tileId :String) {
+            var idParts :Array<String> = tileId.split(",");
+            var x :Int = Std.parseInt(idParts[0]);
+            var y :Int = Std.parseInt(idParts[1]);
+            return { x: x, y: y };
+        }
+        function XYToTileId(x :Int, y :Int) {
+            return x + "," + y;
+        }
+        var getNeighbors = function(tileId) {
+            var tile = tileIdToXY(tileId);
+            var x :Int = tile.x;
+            var y :Int = tile.y;
+
+            var neighbors = new Array<String>();
+            var addIfPassable = function(x :Int, y :Int) {
+                if (x == 1 && y == 0) return;
+                neighbors.push(x + "," + y);
+            };
+            if (x + 1 < 5) addIfPassable(x + 1, y);
+            if (x - 1 >= 0) addIfPassable(x - 1, y);
+            if (y + 1 < 7) addIfPassable(x, y + 1);
+            if (y - 1 >= 0) addIfPassable(x, y - 1);
+            return neighbors;
+        };
+        var getDistance = function(fromId, toId) {
+            var from = tileIdToXY(fromId);
+            var to = tileIdToXY(fromId);
+            return (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
+        };
+
+        var player = playerEntity.get(Player);
+        if (player._tile == null) return [];
+        var playerTileData = player._tile.get(TileData);
+        var playerTileX = playerTileData.tileX;
+        var playerTileY = playerTileData.tileY;
+        return AStar.getPath(XYToTileId(playerTileX, playerTileY), XYToTileId(x, y), getNeighbors, getDistance);
+    }
+
     override public function onUpdate (dt :Float) {
         
     }
+
+    // rot path finding:
+    // https://github.com/ondras/rot.js/blob/master/src/path/astar.js
+    // http://ondras.github.io/rot.js/manual/#path
 
     // function calculateGraph () {
     //     graph = new Graph<Entity>();

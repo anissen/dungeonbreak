@@ -20,12 +20,12 @@ main: ludumdare.Main
 default_platform: html
 
 # The initial orientation and fullscreen state on mobile devices.
-orientation: landscape
+orientation: portrait
 fullscreen: true
 
 # Additional flags to pass to the Haxe compiler.
 # haxe_flags: -lib nape -D foobar
-haxe_flags: -lib sfxr #-lib polygonal-ds
+#haxe_flags: -lib sfxr -lib polygonal-ds
 
 # Additional paths to include in the build.
 # extra_paths:

@@ -38,6 +38,7 @@ class LevelModel extends Component
     {
         _worldLayer = new Entity();
         _worldLayer.add(new Sprite().centerAnchor()); // Dummy sprite to be able to scale the entire scene
+        _worldLayer.get(Sprite).setScaleXY(System.stage.width / WIDTH, System.stage.height / HEIGHT);
         owner.addChild(_worldLayer);
 
         // Add a scrolling ocean background
@@ -52,7 +53,7 @@ class LevelModel extends Component
 
     private function loadMap(index :Int) {
         _mapLayer.disposeChildren();
-        var map = new Map(_ctx, "levels/level" + index + ".lvl", TILE_SIZE, WIDTH, HEIGHT);
+        var map = new TileMap(_ctx, "levels/level" + index + ".lvl", TILE_SIZE, WIDTH, HEIGHT);
         _mapLayer.add(new Sprite());
         _mapLayer.add(map);
 
@@ -142,8 +143,8 @@ class LevelModel extends Component
     private var _moving :Bool = false;
     private var _levelIndex :Int = 1;
     private static var TILE_SIZE :Int = 128;
-    private static var HEIGHT :Int = TILE_SIZE * 5; // 640;
-    private static var WIDTH :Int = TILE_SIZE * 7; //approx. 960;
+    private static var HEIGHT :Int = TILE_SIZE * 7; // 640;
+    private static var WIDTH :Int = TILE_SIZE * 5; //approx. 960;
 
     public var totalMoves :Int = 0;
     public var moves (default, null) :Value<Int>;
