@@ -68,7 +68,7 @@ class PlayScene
         // scene.addChild(cursor); 
         // ---
 
-        ctx.pack.getSound("music/main").loop(0.2);
+        // ctx.pack.getSound("music/main").loop(0.2);
 
         #if debug
         addDebugSpeedAdjuster(System.root);
@@ -100,4 +100,15 @@ class PlayScene
             }
         });
     }
+
+    // HTTP request:
+    /*
+    var urlLoader:Http = new Http("server.php");
+    urlLoader.addParameter("myVar", "myValue");
+    urlLoader.onData = function(data)
+    {
+       trace('got data : $data');
+    }
+    urlLoader.request();
+    */
 }

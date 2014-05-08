@@ -98,8 +98,9 @@ class TileMap extends Component
 
                 tileSprite.pointerDown.connect(function(event :PointerEvent) {
                     mouseDown = true;
-                    startTileX = Math.floor(event.viewX / TILE_SIZE);
-                    startTileY = Math.floor(event.viewY / TILE_SIZE);
+                    startTileX = tileData.tileX;
+                    startTileY = tileData.tileY;
+                    trace('pointer down on tile', startTileX, startTileY);
                     // selection.setXY(startTileX * TILE_SIZE + TILE_SIZE / 2, startTileY * TILE_SIZE + TILE_SIZE / 2);
                     // selection.scaleX.animateTo(1.0, 0.5, Ease.elasticOut);
                     // selection.scaleY.animateTo(1.0, 0.5, Ease.elasticOut);
@@ -114,6 +115,7 @@ class TileMap extends Component
                     mouseDown = false;
                     var tileX = tileData.tileX; // Math.floor(event.viewX / TILE_SIZE);
                     var tileY = tileData.tileY; // Math.floor(event.viewY / TILE_SIZE);
+                    trace('pointer up on tile', tileX, tileY);
                     if (Math.abs(tileX - startTileX) == 0 && Math.abs(tileY - startTileY) == 0) {
                         // TODO: particle effect?
                         // if (empty) return;
@@ -124,7 +126,6 @@ class TileMap extends Component
                         var playerTileY = playerTileData.tileY;
                         var playerSprite = playerEntity.get(Sprite);
                         var path = getPathTo(tileX, tileY);
-                        trace('path', path);
                         player.move(path);
                         // if (Math.abs(playerTileX - tileX) + Math.abs(playerTileY - tileY) == 1) {
                         //     if (canMoveToTile(playerTileData, tileData)) {
@@ -251,6 +252,7 @@ class TileMap extends Component
         var playerTileY = playerTileData.tileY;
         
         var path = AStar.getPath(XYToTileId(playerTileX, playerTileY), XYToTileId(x, y), getNeighbors, getDistance);
+        path.shift(); // Remove own position
         return [for (p in path) { var tile = tileIdToXY(p); tiles[tile.y][tile.x]; }];
     }
 

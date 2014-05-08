@@ -38,7 +38,8 @@ class LevelModel extends Component
     {
         _worldLayer = new Entity();
         _worldLayer.add(new Sprite().centerAnchor()); // Dummy sprite to be able to scale the entire scene
-        _worldLayer.get(Sprite).setScaleXY(System.stage.width / WIDTH, System.stage.height / HEIGHT);
+        var ratio :Float = System.stage.width / WIDTH; //FMath.min(System.stage.width / WIDTH, System.stage.height / HEIGHT);
+        _worldLayer.get(Sprite).setScale(ratio);
         owner.addChild(_worldLayer);
 
         // Add a scrolling ocean background
