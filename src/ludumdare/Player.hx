@@ -46,14 +46,14 @@ class Player extends Component
         }
     }
 
-    public function move (x :Float, y :Float) {
-        // _moveToX = x;
-        // _moveToY = y;
-        _sprite.x.animateTo(x, Math.abs(x - _sprite.x._) / _moveSpeed, Ease.elasticInOut);
-        _sprite.y.animateTo(y, Math.abs(y - _sprite.y._) / _moveSpeed, Ease.elasticInOut);
-    }
+    // public function move (x :Float, y :Float) {
+    //     // _moveToX = x;
+    //     // _moveToY = y;
+    //     _sprite.x.animateTo(x, Math.abs(x - _sprite.x._) / _moveSpeed, Ease.elasticInOut);
+    //     _sprite.y.animateTo(y, Math.abs(y - _sprite.y._) / _moveSpeed, Ease.elasticInOut);
+    // }
 
-    public function moveToTile (tile :Entity) {
+    public function move (tiles :Array<Entity>) {
         // if (_tile != null)
         //     _tile.removeChild(owner);
         // tile.addChild(owner);
@@ -64,20 +64,27 @@ class Player extends Component
         // _sprite.y.animateTo(tile.get(Sprite).y._, Math.abs(tile.get(Sprite).y._ - _sprite.y._) / _moveSpeed, Ease.elasticInOut);
         // _sprite.rotation.animateBy(360, 1, Ease.elasticInOut);
         // var tileSprite = tile.get(ImageSprite);
-        var tileSprite = tile.get(ImageSprite);
-        var distance = (Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2))) / _moveSpeed;
+        
+        //var tileSprite = tile.get(ImageSprite);
+        var distance = 500 / _moveSpeed; //(Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2))) / _moveSpeed;
         var moveScript = new Script();
         owner.add(moveScript);
-        moveScript.run(new Sequence([
-            new MoveTo(tileSprite.x._, tileSprite.y._, distance, Ease.elasticOut, Ease.elasticOut),
-            new CallFunction(function () {
+        var moveSequence = new Sequence();
+        for (tile in tiles) {
+            var tileSprite = tile.get(Sprite);
+            moveSequence.add(new MoveTo(tileSprite.x._, tileSprite.y._, distance, Ease.elasticOut, Ease.elasticOut));
+            moveSequence.add(new Delay(1));
+            moveSequence.add(new CallFunction(function () {
                 _tile = tile;
-                moveScript.dispose();
                 if (tile.has(GoalTile)) {
                     onWin.emit();
                 }
-            })
-        ]));
+            }));
+        }
+        moveSequence.add(new CallFunction(function () {
+            moveScript.dispose();
+        }));
+        moveScript.run(moveSequence);
         _tile = null;
 
     }

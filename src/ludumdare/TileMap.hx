@@ -125,6 +125,7 @@ class TileMap extends Component
                         var playerSprite = playerEntity.get(Sprite);
                         var path = getPathTo(tileX, tileY);
                         trace('path', path);
+                        player.move(path);
                         // if (Math.abs(playerTileX - tileX) + Math.abs(playerTileY - tileY) == 1) {
                         //     if (canMoveToTile(playerTileData, tileData)) {
                         //         player.moveToTile(tileSprite.owner);
@@ -144,13 +145,13 @@ class TileMap extends Component
                                 shakeScript.run(new Shake(5, 5, 0.5));
                                 emitter.setXY(tile.get(Sprite).x._, tile.get(Sprite).y._);
                                 emitter.restart();
-                                _ctx.playHurt();
+                                // _ctx.playHurt();
                                 hasBlock = true;
                             }
                         }
                         if (hasBlock) return;
                         moveRow(tileY, tileX - startTileX);
-                        _ctx.playExplosion();
+                        // _ctx.playExplosion();
                         moves._++;
                     } else if (Math.abs(tileY - startTileY) != 0) {
                         var hasBlock = false;
@@ -161,13 +162,13 @@ class TileMap extends Component
                                 shakeScript.run(new Shake(5, 5, 0.5));
                                 emitter.setXY(tile.get(Sprite).x._, tile.get(Sprite).y._);
                                 emitter.restart();
-                                _ctx.playHurt();
+                                // _ctx.playHurt();
                                 hasBlock = true;
                             }
                         }
                         if (hasBlock) return;
                         moveColumn(tileX, tileY - startTileY);
-                        _ctx.playExplosion();
+                        // _ctx.playExplosion();
                         moves._++;
                     }
                 });
@@ -194,7 +195,7 @@ class TileMap extends Component
                 var startTileSprite = startTile.get(Sprite);
                 playerSprite.setXY(startTileSprite.x._, startTileSprite.y._);
                 playerSprite.setScale(5.0);
-                player.moveToTile(startTile);
+                player.move([startTile]);
                 playerSprite.scaleX.animateTo(0.75, 1, flambe.animation.Ease.bounceOut);
                 playerSprite.scaleY.animateTo(0.75, 1, flambe.animation.Ease.bounceOut);
                 playerSprite.alpha.animateTo(1, 1, flambe.animation.Ease.bounceOut);
@@ -205,13 +206,13 @@ class TileMap extends Component
                 var startTileSprite = startTile.get(Sprite);
                 emitter.setXY(startTileSprite.x._, startTileSprite.y._);
                 emitter.restart();
-                _ctx.playExplosion();
+                // _ctx.playExplosion();
                 spawnPlayerScript.dispose();
             }),
         ]));
     }
 
-    private function getPathTo(x: Int, y :Int) {
+    private function getPathTo(x: Int, y :Int) :Array<Entity> {
         function tileIdToXY(tileId :String) {
             var idParts :Array<String> = tileId.split(",");
             var x :Int = Std.parseInt(idParts[0]);
@@ -248,7 +249,9 @@ class TileMap extends Component
         var playerTileData = player._tile.get(TileData);
         var playerTileX = playerTileData.tileX;
         var playerTileY = playerTileData.tileY;
-        return AStar.getPath(XYToTileId(playerTileX, playerTileY), XYToTileId(x, y), getNeighbors, getDistance);
+        
+        var path = AStar.getPath(XYToTileId(playerTileX, playerTileY), XYToTileId(x, y), getNeighbors, getDistance);
+        return [for (p in path) { var tile = tileIdToXY(p); tiles[tile.y][tile.x]; }];
     }
 
     override public function onUpdate (dt :Float) {

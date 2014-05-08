@@ -90,7 +90,7 @@ class LevelModel extends Component
         
         var player = map.playerEntity.get(Player);
         player.onWin.connect(function() {
-            _ctx.playPowerup();
+            // _ctx.playPowerup();
             loadMap(++_levelIndex);
         });
     }

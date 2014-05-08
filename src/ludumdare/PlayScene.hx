@@ -23,7 +23,10 @@ class PlayScene
 
         var level = new LevelModel(ctx);
         ctx.level = level;
+        // scene.add(new Sprite());
         scene.add(level);
+        // scene.get(Sprite).scaleX._ = System.stage.width / 640;
+        // scene.get(Sprite).scaleY._ = System.stage.height / 896;
 
         // Show a score label on the top left
         var scoreLabel = new TextSprite(ctx.arialFont);
