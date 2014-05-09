@@ -38,12 +38,12 @@ class LevelModel extends Component
     {
         _worldLayer = new Entity();
         _worldLayer.add(new Sprite().centerAnchor()); // Dummy sprite to be able to scale the entire scene
-        var ratio :Float = System.stage.width / WIDTH; //FMath.min(System.stage.width / WIDTH, System.stage.height / HEIGHT);
+        var ratio :Float = FMath.min(System.stage.width / (WIDTH * TILE_SIZE), System.stage.height / (HEIGHT * TILE_SIZE));
         _worldLayer.get(Sprite).setScale(ratio);
         owner.addChild(_worldLayer);
 
         // Add a scrolling ocean background
-        var background = new PatternSprite(_ctx.pack.getTexture("backgrounds/background"), WIDTH, HEIGHT);
+        var background = new PatternSprite(_ctx.pack.getTexture("backgrounds/background"), System.stage.width, System.stage.height);
         background.setScale(2);
         _worldLayer.addChild(new Entity().add(background).add(new BackgroundScroller(100)));
         _worldLayer.addChild(_mapLayer = new Entity());
@@ -53,7 +53,7 @@ class LevelModel extends Component
 
     private function loadMap(index :Int) {
         _mapLayer.disposeChildren();
-        var map = new TileMap(_ctx, "levels/level" + index + ".lvl", TILE_SIZE, WIDTH, HEIGHT);
+        var map = new LevelMap(_ctx, "levels/level" + index + ".lvl", TILE_SIZE, WIDTH, HEIGHT);
         _mapLayer.add(new Sprite());
         _mapLayer.add(map);
 
@@ -109,8 +109,8 @@ class LevelModel extends Component
     private var _moving :Bool = false;
     private var _levelIndex :Int = 1;
     private static var TILE_SIZE :Int = 128;
-    private static var HEIGHT :Int = TILE_SIZE * 8; // 1024
-    private static var WIDTH :Int = TILE_SIZE * 5; // 640;
+    private static var WIDTH :Int = 5; // 640;
+    private static var HEIGHT :Int = 8; // 1024
 
     public var totalMoves :Int = 0;
     public var moves (default, null) :Value<Int>;

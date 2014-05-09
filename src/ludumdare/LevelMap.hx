@@ -21,26 +21,29 @@ import flambe.display.EmitterSprite;
 import flambe.util.Value;
 
 /** Logic for tile map. */
-class TileMap extends Component
+class LevelMap extends Component
 {
+    private var _ctx :GameContext;
+    private var _name :String;
+    private var _file :String;
+    private var _moveSpeed :Float = 200;
+
+    private var tilemap :TileMap;
+
+    public var playerEntity (default, null) :Entity;
+    public var moves (default, null) :Value<Int>;
+
     public function new (ctx :GameContext, file :String, tileSize :Int, width :Int, height :Int)
     {
         _ctx = ctx;
         _file = file;
-        TILE_SIZE = tileSize;
-        WIDTH = width;
-        HEIGHT = height;
+        tilemap = new TileMap(tileSize, width, height);
         moves = new Value<Int>(0);
     }
 
     override public function onAdded ()
     {
-        tiles = [
-            for (y in 0...8) [ 
-                for (x in 0...5)
-                    new Entity() 
-            ]
-        ];
+        tilemap.init();
 
         var mouseDown = false;
         var startTileX :Float = 0; 
@@ -50,12 +53,15 @@ class TileMap extends Component
         var emitter :EmitterSprite = emitterMold.createEmitter();
         var emitterEntity :Entity = new Entity().add(emitter);
 
+        // TODO: Should be:
+        // tilemap = levelLoader.load(_file);
+
         var rawlevel :String = _ctx.pack.getFile(_file).toString();
         var lines = rawlevel.split("\n");
 
-        for (y in 0...8) {
-            for (x in 0...5) {
-                var entity = tiles[y][x];
+        for (y in 0...tilemap.getHeight()) {
+            for (x in 0...tilemap.getWidth()) {
+                var entity = tilemap.getTile(x, y);
                 var rotation = Math.floor(Math.random() * 4);
                 var random = Math.random();
 
@@ -79,15 +85,14 @@ class TileMap extends Component
 
                 var tileSprite = entity.get(Sprite);
                 tileSprite.centerAnchor();
-                tileSprite.setXY(WIDTH / 2, HEIGHT / 2);
-                tileSprite.x.animateTo(x * TILE_SIZE + TILE_SIZE / 2, 1 + Math.random(), Ease.elasticOut);
-                tileSprite.y.animateTo(y * TILE_SIZE + TILE_SIZE / 2, 1 + Math.random(), Ease.elasticOut);
+                tileSprite.setXY(tilemap.getViewWidth() / 2, tilemap.getViewHeight() / 2);
+                tileSprite.x.animateTo(tilemap.tileToView(x), 1 + Math.random(), Ease.elasticOut);
+                tileSprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
                 tileSprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
                 tileSprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
                 var rotations = [0.0, 90.0, 180.0, 270.0];
                 tileSprite.rotation.animateTo(rotations[rotation], 1 + Math.random(), Ease.elasticOut);
 
-                var entity = tiles[y][x];
                 entity.add(tileSprite);
                 owner.addChild(entity);
 
@@ -97,20 +102,13 @@ class TileMap extends Component
                     mouseDown = true;
                     startTileX = tileData.tileX;
                     startTileY = tileData.tileY;
-                    // selection.setXY(startTileX * TILE_SIZE + TILE_SIZE / 2, startTileY * TILE_SIZE + TILE_SIZE / 2);
-                    // selection.scaleX.animateTo(1.0, 0.5, Ease.elasticOut);
-                    // selection.scaleY.animateTo(1.0, 0.5, Ease.elasticOut);
-                    // selection.alpha.animateTo(1.0, 0.5, Ease.elasticOut);
                 });
                 tileSprite.pointerUp.connect(function(event :PointerEvent) {
                     if (!mouseDown) return;
-                    // selection.scaleX.animateTo(0.0, 0.5, Ease.elasticOut);
-                    // selection.scaleY.animateTo(0.0, 0.5, Ease.elasticOut);
-                    // selection.alpha.animateTo(0.0, 0.5, Ease.elasticOut);
 
                     mouseDown = false;
-                    var tileX = tileData.tileX; // Math.floor(event.viewX / TILE_SIZE);
-                    var tileY = tileData.tileY; // Math.floor(event.viewY / TILE_SIZE);
+                    var tileX = tileData.tileX;
+                    var tileY = tileData.tileY;
                     if (Math.abs(tileX - startTileX) == 0 && Math.abs(tileY - startTileY) == 0) {
                         // TODO: particle effect?
                         // if (empty) return;
@@ -134,7 +132,7 @@ class TileMap extends Component
                     if (Math.abs(tileX - startTileX) != 0 && Math.abs(tileY - startTileY) != 0) return;
                     if (Math.abs(tileX - startTileX) != 0) {
                         var hasBlock = false;
-                        for (tile in getRow(tileY)) {
+                        for (tile in tilemap.getRow(tileY)) {
                             if (tile.has(BlockTile)) {
                                 var shakeScript = new Script();
                                 tile.add(shakeScript);
@@ -151,7 +149,7 @@ class TileMap extends Component
                         moves._++;
                     } else if (Math.abs(tileY - startTileY) != 0) {
                         var hasBlock = false;
-                        for (tile in getColumn(tileX)) {
+                        for (tile in tilemap.getColumn(tileX)) {
                             if (tile.has(BlockTile)) {
                                 var shakeScript = new Script();
                                 tile.add(shakeScript);
@@ -185,7 +183,7 @@ class TileMap extends Component
         spawnPlayerScript.run(new Sequence([
             new Shake(2, 2, 0.5),
             new CallFunction(function() {
-                var startTile = tiles[2][2];
+                var startTile = tilemap.getTile(2, 2); // TODO: Get this information from the level data
                 var startTileSprite = startTile.get(Sprite);
                 playerSprite.setXY(startTileSprite.x._, startTileSprite.y._);
                 playerSprite.setScale(5.0);
@@ -196,7 +194,7 @@ class TileMap extends Component
             }),
             new Delay(0.3),
             new CallFunction(function() {
-                var startTile = tiles[2][2];
+                var startTile = tilemap.getTile(2, 2);
                 var startTileSprite = startTile.get(Sprite);
                 emitter.setXY(startTileSprite.x._, startTileSprite.y._);
                 emitter.restart();
@@ -246,7 +244,7 @@ class TileMap extends Component
         
         var path = AStar.getPath(XYToTileId(playerTileX, playerTileY), XYToTileId(x, y), getNeighbors, getDistance);
         path.shift(); // Remove own position
-        return [for (p in path) { var tile = tileIdToXY(p); tiles[tile.y][tile.x]; }];
+        return [for (p in path) { var tile = tileIdToXY(p); tilemap.getTile(tile.x, tile.y); }];
     }
 
     override public function onUpdate (dt :Float) {
@@ -261,34 +259,14 @@ class TileMap extends Component
         return true;
     }
 
-    function getRow(index :Int) {
-        return tiles[index];
-    }
-
-    function getColumn(index :Int) {
-        var column = new Array<Entity>();
-        for (row in tiles) {
-            column.push(row[index]);
-        }
-        return column;
-    }
-
     function moveRow(index :Int, direction :Float) {
-        var row = tiles[index];
-        if (direction > 0) {
-            row.unshift(row.pop());
-        } else if (direction < 0) {
-            row.push(row.shift());
-        }
+        tilemap.moveRow(index, direction);
         var count = 0;
-        for (tile in row) {
+        for (tile in tilemap.getRow(index)) {
             var tileData = tile.get(TileData);
             tileData.tileX = count;
             var sprite = tile.get(ImageSprite);
-            sprite.x.animateTo(count * TILE_SIZE + TILE_SIZE / 2, 1, Ease.elasticOut);
-            // if (tile.has(EmitterSprite)) {
-            //     tile.get(EmitterSprite).restart();
-            // }
+            sprite.x.animateTo(tilemap.tileToView(count), 1, Ease.elasticOut);
             count++;
         }
         var shakeScript = new Script();
@@ -297,10 +275,7 @@ class TileMap extends Component
     }
 
     function moveColumn(index :Int, direction :Float) {
-        var column = new Array<Entity>();
-        for (row in tiles) {
-            column.push(row[index]);
-        }
+        var column = tilemap.getColumn(index);
         if (direction > 0) {
             column.unshift(column.pop());
         } else if (direction < 0) {
@@ -311,27 +286,11 @@ class TileMap extends Component
             var tileData = tile.get(TileData);
             tileData.tileY = y;
             var sprite = tile.get(ImageSprite);
-            sprite.y.animateTo(y * TILE_SIZE + TILE_SIZE / 2, 1, Ease.elasticOut);
-            tiles[y][index] = tile;
+            sprite.y.animateTo(tilemap.tileToView(y), 1, Ease.elasticOut);
+            tilemap.setTile(tile, index, y);
         }
         var shakeScript = new Script();
         owner.add(shakeScript);
         shakeScript.run(new Shake(2, 1, 0.4));
     }
-
-    private var _ctx :GameContext;
-    private var _name :String;
-    private var _file :String;
-    private var _moveSpeed :Float = 200;
-
-    private var TILE_SIZE :Int;
-    private var HEIGHT :Int;
-    private var WIDTH :Int;
-
-    private var tiles :Array<Array<Entity>>;
-
-    public var _engineSoundPlayback :Playback;
-
-    public var playerEntity (default, null) :Entity;
-    public var moves (default, null) :Value<Int>;
 }
