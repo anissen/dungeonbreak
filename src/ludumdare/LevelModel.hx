@@ -144,8 +144,8 @@ class LevelModel extends Component
     private var _moving :Bool = false;
     private var _levelIndex :Int = 1;
     private static var TILE_SIZE :Int = 128;
-    private static var HEIGHT :Int = TILE_SIZE * 7; // 640;
-    private static var WIDTH :Int = TILE_SIZE * 5; //approx. 960;
+    private static var HEIGHT :Int = TILE_SIZE * 8; // 1024
+    private static var WIDTH :Int = TILE_SIZE * 5; // 640;
 
     public var totalMoves :Int = 0;
     public var moves (default, null) :Value<Int>;

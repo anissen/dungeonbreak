@@ -36,7 +36,7 @@ class TileMap extends Component
     override public function onAdded ()
     {
         tiles = [
-            for (y in 0...7) [ 
+            for (y in 0...8) [ 
                 for (x in 0...5)
                     new Entity() 
             ]
@@ -56,7 +56,7 @@ class TileMap extends Component
         var rawlevel :String = _ctx.pack.getFile(_file).toString();
         var lines = rawlevel.split("\n");
 
-        for (y in 0...7) {
+        for (y in 0...8) {
             for (x in 0...5) {
                 var entity = tiles[y][x];
                 var rotation = Math.floor(Math.random() * 4);
@@ -64,19 +64,19 @@ class TileMap extends Component
 
                 var type = lines[y].charAt(x);
                 switch (type) {
-                    case "|": entity.add(new StraightTile(_ctx, x, y, rotation = 0));
-                    case "-": entity.add(new StraightTile(_ctx, x, y, rotation = 1));
-                    case "L": entity.add(new BendTile(_ctx, x, y, rotation = 0));
-                    case "<": entity.add(new BendTile(_ctx, x, y, rotation = 1));
-                    case ">": entity.add(new BendTile(_ctx, x, y, rotation = 2));
-                    case "V": entity.add(new BendTile(_ctx, x, y, rotation = 3));
+                    case "│": entity.add(new StraightTile(_ctx, x, y, rotation = 0));
+                    case "─": entity.add(new StraightTile(_ctx, x, y, rotation = 1));
+                    case "└": entity.add(new BendTile(_ctx, x, y, rotation = 0));
+                    case "┌": entity.add(new BendTile(_ctx, x, y, rotation = 1));
+                    case "┐": entity.add(new BendTile(_ctx, x, y, rotation = 2));
+                    case "┘": entity.add(new BendTile(_ctx, x, y, rotation = 3));
                     case " ": entity.add(new EmptyTile(_ctx, x, y, rotation));
-                    case "W": entity.add(new GoalTile(_ctx, x, y, rotation = 0));
-                    case "E": entity.add(new GoalTile(_ctx, x, y, rotation = 1));
-                    case "M": entity.add(new GoalTile(_ctx, x, y, rotation = 2));
-                    case "3": entity.add(new GoalTile(_ctx, x, y, rotation = 3));
+                    case "╧": entity.add(new GoalTile(_ctx, x, y, rotation = 0));
+                    case "╟": entity.add(new GoalTile(_ctx, x, y, rotation = 1));
+                    case "╤": entity.add(new GoalTile(_ctx, x, y, rotation = 2));
+                    case "╢": entity.add(new GoalTile(_ctx, x, y, rotation = 3));
                     case "G": entity.add(new GrassTile(_ctx, x, y, rotation));
-                    case "X": entity.add(new BlockTile(_ctx, x, y, rotation));
+                    case "█": entity.add(new BlockTile(_ctx, x, y, rotation));
                     default: trace("Unkown tile type: ", type);
                 }
 
@@ -100,7 +100,6 @@ class TileMap extends Component
                     mouseDown = true;
                     startTileX = tileData.tileX;
                     startTileY = tileData.tileY;
-                    trace('pointer down on tile', startTileX, startTileY);
                     // selection.setXY(startTileX * TILE_SIZE + TILE_SIZE / 2, startTileY * TILE_SIZE + TILE_SIZE / 2);
                     // selection.scaleX.animateTo(1.0, 0.5, Ease.elasticOut);
                     // selection.scaleY.animateTo(1.0, 0.5, Ease.elasticOut);
@@ -115,7 +114,6 @@ class TileMap extends Component
                     mouseDown = false;
                     var tileX = tileData.tileX; // Math.floor(event.viewX / TILE_SIZE);
                     var tileY = tileData.tileY; // Math.floor(event.viewY / TILE_SIZE);
-                    trace('pointer up on tile', tileX, tileY);
                     if (Math.abs(tileX - startTileX) == 0 && Math.abs(tileY - startTileY) == 0) {
                         // TODO: particle effect?
                         // if (empty) return;
@@ -235,7 +233,7 @@ class TileMap extends Component
             };
             if (x + 1 < 5) addIfPassable(x + 1, y);
             if (x - 1 >= 0) addIfPassable(x - 1, y);
-            if (y + 1 < 7) addIfPassable(x, y + 1);
+            if (y + 1 < 8) addIfPassable(x, y + 1);
             if (y - 1 >= 0) addIfPassable(x, y - 1);
             return neighbors;
         };
