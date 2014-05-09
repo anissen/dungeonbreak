@@ -56,18 +56,6 @@ class PlayScene
         // });
         // scene.addChild(new Entity().add(pause));
 
-        // --- Set custom mouse cursor
-        // System.mouse.cursor = None;
-
-        // var cursorIcon :Cursor = new Cursor(ctx, "cursors/cursor");
-        // var cursor :Entity = new Entity().add(cursorIcon);
-
-        // System.pointer.move.connect(function (event :PointerEvent) {
-        //     cursor.get(Sprite).setXY(event.viewX, event.viewY);
-        // });
-        // scene.addChild(cursor); 
-        // ---
-
         // ctx.pack.getSound("music/main").loop(0.2);
 
         #if debug
@@ -100,15 +88,4 @@ class PlayScene
             }
         });
     }
-
-    // HTTP request:
-    /*
-    var urlLoader:Http = new Http("server.php");
-    urlLoader.addParameter("myVar", "myValue");
-    urlLoader.onData = function(data)
-    {
-       trace('got data : $data');
-    }
-    urlLoader.request();
-    */
 }

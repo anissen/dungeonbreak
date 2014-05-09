@@ -20,7 +20,7 @@ import flambe.display.EmitterMold;
 import flambe.display.EmitterSprite;
 import flambe.util.Value;
 
-/** Logic for planes. */
+/** Logic for tile map. */
 class TileMap extends Component
 {
     public function new (ctx :GameContext, file :String, tileSize :Int, width :Int, height :Int)
@@ -45,9 +45,6 @@ class TileMap extends Component
         var mouseDown = false;
         var startTileX :Float = 0; 
         var startTileY :Float = 0;
-        // var selection = new ImageSprite(_ctx.pack.getTexture("tiles/selection"));
-        // selection.centerAnchor();
-        // selection.disablePointer();
 
         var emitterMold :EmitterMold = new EmitterMold(_ctx.pack, "particles/explode");
         var emitter :EmitterSprite = emitterMold.createEmitter();
@@ -174,9 +171,7 @@ class TileMap extends Component
             }
         }
 
-        // owner.addChild(new Entity().add(selection));
-
-        // Create the player's plane
+        // Create the player's sprite
         var player = new Player(_ctx, "player/player");
         playerEntity = new Entity().add(player);
         owner.addChild(playerEntity);
@@ -258,36 +253,6 @@ class TileMap extends Component
         
     }
 
-    // rot path finding:
-    // https://github.com/ondras/rot.js/blob/master/src/path/astar.js
-    // http://ondras.github.io/rot.js/manual/#path
-
-    // function calculateGraph () {
-    //     graph = new Graph<Entity>();
-    //     var a;
-    //     for (y in 1...5) { // TODO: X and Y should be swapped for portrait mode
-    //         for (x in 0...7) {
-    //             a = graph.addNode(graph.createNode(tiles[y-1][x]));
-    //             var b = graph.addNode(graph.createNode(tiles[y][x]));
-    //             graph.addMutualArc(a, b);
-    //         }
-    //     }
-    //     for (y in 0...5) { // TODO: X and Y should be swapped for portrait mode
-    //         for (x in 1...7) {
-    //             var a = graph.addNode(graph.createNode(tiles[y][x-1]));
-    //             var b = graph.addNode(graph.createNode(tiles[y][x]));
-    //             graph.addMutualArc(a, b);
-    //         }
-    //     }
-    //     var f = function(node:GraphNode<Entity>, preflight :Bool, userData :Dynamic) :Bool {
-    //         trace("searching: " + node.val);
-    //         return true;
-    //     }
-    //     var preflight = false;
-    //     var seed = a; //use first node as initial node
-    //     graph.DFS(preflight, seed, f);
-    // }
-
     function canMoveToTile (fromTile :TileData, toTile :TileData) {
         if (toTile.tileX < fromTile.tileX && (!fromTile.leftOpen   || !toTile.rightOpen))  return false;
         if (toTile.tileX > fromTile.tileX && (!fromTile.rightOpen  || !toTile.leftOpen))   return false;
@@ -358,7 +323,6 @@ class TileMap extends Component
     private var _name :String;
     private var _file :String;
     private var _moveSpeed :Float = 200;
-    // private var _rotationSpeed :Float = 10;
 
     private var TILE_SIZE :Int;
     private var HEIGHT :Int;
@@ -369,12 +333,5 @@ class TileMap extends Component
     public var _engineSoundPlayback :Playback;
 
     public var playerEntity (default, null) :Entity;
-
-    // public var graph :Graph<Entity>;
-
-    //private var _moveListener :flambe.System.Sig;
-    public var onMoveStart :Signal1<Entity> = new Signal1<Entity>();
-    public var onMoveStop :Signal1<Entity> = new Signal1<Entity>();
-
     public var moves (default, null) :Value<Int>;
 }

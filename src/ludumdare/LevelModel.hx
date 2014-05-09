@@ -49,7 +49,6 @@ class LevelModel extends Component
         _worldLayer.addChild(_mapLayer = new Entity());
 
         loadMap(_levelIndex);
-        // speak("System operational");
     }
 
     private function loadMap(index :Int) {
@@ -96,43 +95,9 @@ class LevelModel extends Component
         });
     }
 
-    private function speak (text :String) {
-        #if js
-        js.Lib.eval("speak('" + text + "', 33)");
-        #end
-    }
-
-    private function onPlanetMouseEnter (event :PointerEvent) {
-        trace("Entered planet " + event.hit.name);
-    }
-
-    private function onPlanetMouseLeave (event :PointerEvent) {
-        trace("Left planet " + event.hit.name);
-    }
-
-    private function onPlanetMouseClick (event :PointerEvent) {
-        var planet = event.hit.owner;
-        trace("Clicked planet " + event.hit.name);
-
-        // speak("Moving to " + planet.get(Planet).planetName);
-    }
-
     override public function onUpdate (dt :Float)
     {
-        // var playerSprite = player.get(Sprite);
-        // var worldSprite = _worldLayer.get(Sprite);
 
-        // if (System.mouse.isDown(flambe.input.MouseButton.Left)) {
-        //     var pointerX = worldSprite.anchorX._ + System.mouse.x * (1 / _zoom._);
-        //     var pointerY = worldSprite.anchorY._ + System.mouse.y * (1 / _zoom._);
-        //     var spaceship = player.get(Player);
-        //     spaceship.move(pointerX, pointerY);
-        // }
-        // _zoom.update(dt);
-        // // _zoom._ = FMath.clamp(_zoom._ + (_moving ? -2 * dt : 2 * dt), 0.7, 2);
-        // worldSprite
-        //     .setScale(_zoom._)
-        //     .setAnchor(playerSprite.x._ - (System.stage.width / 2) / _zoom._, playerSprite.y._ - (System.stage.height / 2) / _zoom._);
     }
 
     private var _ctx :GameContext;
