@@ -119,6 +119,7 @@ class LevelMap extends Component
                         var playerTileY = playerTileData.tileY;
                         var playerSprite = playerEntity.get(Sprite);
                         var path = getPathTo(tileX, tileY);
+                        trace("path length", path.length);
                         player.move(path);
                         // if (Math.abs(playerTileX - tileX) + Math.abs(playerTileY - tileY) == 1) {
                         //     if (canMoveToTile(playerTileData, tileData)) {
@@ -178,12 +179,21 @@ class LevelMap extends Component
         var playerSprite = playerEntity.get(Sprite);
         playerSprite.setAlpha(0.0);
 
+        var startX = 2;
+        var startY = 2;
+        // HACK to get the players position
+        if (lines.length >= tilemap.getHeight()) {
+            var startStr = lines[tilemap.getHeight()].split(",");
+            startX = Std.parseInt(startStr[0]);
+            startY = Std.parseInt(startStr[1]);
+        }
+
         var spawnPlayerScript = new Script();
         owner.add(spawnPlayerScript);
         spawnPlayerScript.run(new Sequence([
             new Shake(2, 2, 0.5),
             new CallFunction(function() {
-                var startTile = tilemap.getTile(2, 2); // TODO: Get this information from the level data
+                var startTile = tilemap.getTile(startX, startY); // TODO: Get this information from the level data
                 var startTileSprite = startTile.get(Sprite);
                 playerSprite.setXY(startTileSprite.x._, startTileSprite.y._);
                 playerSprite.setScale(5.0);
@@ -194,7 +204,7 @@ class LevelMap extends Component
             }),
             new Delay(0.3),
             new CallFunction(function() {
-                var startTile = tilemap.getTile(2, 2);
+                var startTile = tilemap.getTile(startX, startY);
                 var startTileSprite = startTile.get(Sprite);
                 emitter.setXY(startTileSprite.x._, startTileSprite.y._);
                 emitter.restart();
@@ -218,15 +228,17 @@ class LevelMap extends Component
             var tile = tileIdToXY(tileId);
             var x :Int = tile.x;
             var y :Int = tile.y;
+            var fromTileData = tilemap.getTile(x, y).get(TileData);
 
             var neighbors = new Array<String>();
-            var addIfPassable = function(x :Int, y :Int) {
-                if (x == 1 && y == 0) return;
-                neighbors.push(x + "," + y);
+            var addIfPassable = function(toX :Int, toY :Int) {
+                var toTileData = tilemap.getTile(toX, toY).get(TileData);
+                if (!canMoveToTile(fromTileData, toTileData)) return;
+                neighbors.push(toX + "," + toY);
             };
-            if (x + 1 < 5) addIfPassable(x + 1, y);
+            if (x + 1 < tilemap.getWidth()) addIfPassable(x + 1, y);
             if (x - 1 >= 0) addIfPassable(x - 1, y);
-            if (y + 1 < 8) addIfPassable(x, y + 1);
+            if (y + 1 < tilemap.getHeight()) addIfPassable(x, y + 1);
             if (y - 1 >= 0) addIfPassable(x, y - 1);
             return neighbors;
         };

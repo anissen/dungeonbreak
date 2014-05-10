@@ -62,31 +62,31 @@ class LevelModel extends Component
             moves._ = /* totalMoves + */ movesOnMap;
         });
 
-        var levelMessage :String = _ctx.messages.get("level" + index, [totalMoves]);
-        if (levelMessage != "level" + index) { 
-            var worldSpeed = new SpeedAdjuster(0.5);
-            _worldLayer.add(worldSpeed);
+        // var levelMessage :String = _ctx.messages.get("level" + index, [totalMoves]);
+        // if (levelMessage != "level" + index) { 
+        //     var worldSpeed = new SpeedAdjuster(0.5);
+        //     _worldLayer.add(worldSpeed);
 
-            var showPromptScript = new Script();
-            owner.add(showPromptScript);
-            showPromptScript.run(new Sequence([
-                new CallFunction(function() {
-                    // Adjust the speed of the world for a dramatic slow motion effect
-                    worldSpeed.scale.animateTo(0.0, 1);
-                }),
-                new Delay(1),
-                new CallFunction(function() {
-                    _ctx.showPrompt(_ctx.messages.get("info_heading", [index]), levelMessage, [
-                        "play", function () {
-                            // Unpause by unwinding to the original scene
-                            _ctx.director.unwindToScene(owner);
-                            worldSpeed.scale.animateTo(1.0, 1);
-                        }
-                    ]);
-                    showPromptScript.dispose();
-                })
-            ]));
-        }
+        //     var showPromptScript = new Script();
+        //     owner.add(showPromptScript);
+        //     showPromptScript.run(new Sequence([
+        //         new CallFunction(function() {
+        //             // Adjust the speed of the world for a dramatic slow motion effect
+        //             worldSpeed.scale.animateTo(0.0, 1);
+        //         }),
+        //         new Delay(1),
+        //         new CallFunction(function() {
+        //             _ctx.showPrompt(_ctx.messages.get("info_heading", [index]), levelMessage, [
+        //                 "play", function () {
+        //                     // Unpause by unwinding to the original scene
+        //                     _ctx.director.unwindToScene(owner);
+        //                     worldSpeed.scale.animateTo(1.0, 1);
+        //                 }
+        //             ]);
+        //             showPromptScript.dispose();
+        //         })
+        //     ]));
+        // }
         
         var player = map.playerEntity.get(Player);
         player.onWin.connect(function() {

@@ -47,6 +47,8 @@ class Player extends Component
     }
 
     public function move (tiles :Array<Entity>) {
+        if (tiles.length == 0) return;
+
         var distance = 500 / _moveSpeed; //(Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2))) / _moveSpeed;
 
         // TODO: Make this into a Component
