@@ -41,25 +41,29 @@ class Player extends Component
     }
 
     override public function onUpdate (dt :Float) {
-        // if (_tile != null) {
-        //     var tileSprite = _tile.get(ImageSprite);
-        //     _sprite.setXY(tileSprite.x._, tileSprite.y._);
-        // }
+        if (_movePath.length == 0) {
+            if (_tile != null) {
+                var tileSprite = _tile.get(ImageSprite);
+                _sprite.setXY(tileSprite.x._, tileSprite.y._);
+            }
+            return;
+        }
 
-        if (_movePath.length == 0) return;
         var nextTile = _movePath[0];
         _tile = nextTile;
         var tileSprite = nextTile.get(Sprite);
-        var distance = Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2));
-        if (distance < 50) {
+        var diffX = tileSprite.x._ - _sprite.x._;
+        var diffY = tileSprite.y._ - _sprite.y._;
+        var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+        if (distance < 10) {
             if (nextTile.has(GoalTile)) {
                 onWin.emit();
             }
             _movePath.shift();
             return;
         }
-        _sprite.x._ += (tileSprite.x._ - _sprite.x._) * _moveSpeed * dt;
-        _sprite.y._ += (tileSprite.y._ - _sprite.y._) * _moveSpeed * dt;
+        _sprite.x._ += diffX * _moveSpeed * dt;
+        _sprite.y._ += diffY * _moveSpeed * dt;
     }
 
     public function move (tiles :Array<Entity>) {
@@ -97,7 +101,7 @@ class Player extends Component
     private var _ctx :GameContext;
     private var _name :String;
     private var _sprite :ImageSprite;
-    private var _moveSpeed :Float = 5;
+    private var _moveSpeed :Float = 10;
     private var _script :Script;
     private var _moveToX :Float;
     private var _moveToY :Float;
