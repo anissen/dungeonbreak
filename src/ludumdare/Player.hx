@@ -23,6 +23,7 @@ class Player extends Component
     {
         _ctx = ctx;
         _name = name;
+        _movePath = new Array<Entity>();
     }
 
     override public function onAdded ()
@@ -40,47 +41,67 @@ class Player extends Component
     }
 
     override public function onUpdate (dt :Float) {
-        if (_tile != null) {
-            var tileSprite = _tile.get(ImageSprite);
-            _sprite.setXY(tileSprite.x._, tileSprite.y._);
+        // if (_tile != null) {
+        //     var tileSprite = _tile.get(ImageSprite);
+        //     _sprite.setXY(tileSprite.x._, tileSprite.y._);
+        // }
+
+        if (_movePath.length == 0) return;
+        var nextTile = _movePath[0];
+        _tile = nextTile;
+        var tileSprite = nextTile.get(Sprite);
+        var distance = Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2));
+        if (distance < 50) {
+            if (nextTile.has(GoalTile)) {
+                onWin.emit();
+            }
+            _movePath.shift();
+            return;
         }
+        _sprite.x._ += (tileSprite.x._ - _sprite.x._) * _moveSpeed * dt;
+        _sprite.y._ += (tileSprite.y._ - _sprite.y._) * _moveSpeed * dt;
     }
 
     public function move (tiles :Array<Entity>) {
-        if (tiles.length == 0) return;
+        _movePath = tiles;
+        // if (tiles.length == 0) return;
 
-        var distance = 500 / _moveSpeed; //(Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2))) / _moveSpeed;
+        // var distance = 2; //(Math.sqrt(Math.pow(tileSprite.x._ - _sprite.x._, 2) + Math.pow(tileSprite.y._ - _sprite.y._, 2))) / _moveSpeed;
 
-        // TODO: Make this into a Component
-        var moveScript = new Script();
-        owner.add(moveScript);
-        var moveSequence = new Sequence();
-        for (tile in tiles) {
-            var tileSprite = tile.get(Sprite);
-            moveSequence.add(new MoveTo(tileSprite.x._, tileSprite.y._, distance, Ease.elasticOut, Ease.elasticOut));
-            moveSequence.add(new Delay(1));
-            moveSequence.add(new CallFunction(function () {
-                _tile = tile;
-                if (tile.has(GoalTile)) {
-                    onWin.emit();
-                }
-            }));
-        }
-        moveSequence.add(new CallFunction(function () {
-            moveScript.dispose();
-        }));
-        moveScript.run(moveSequence);
-        _tile = null;
+        // // TODO: Make this into a Component
+        // var moveScript = new Script();
+        // owner.add(moveScript);
+        // var moveSequence = new Sequence();
+        // var count = 0;
+        // for (tile in tiles) {
+        //     count++;
+        //     var tileSprite = tile.get(Sprite);
+        //     moveSequence.add(new MoveTo(tileSprite.x._, tileSprite.y._, distance * count, Ease.elasticOut, Ease.elasticOut));
+        //     moveSequence.add(new Delay(1));
+        //     moveSequence.add(new CallFunction(function () {
+        //         trace("call function");
+        //         _tile = tile;
+        //         if (tile.has(GoalTile)) {
+        //             onWin.emit();
+        //         }
+        //     }));
+        // }
+        // moveSequence.add(new CallFunction(function () {
+        //     moveScript.dispose();
+        // }));
+        // moveScript.run(moveSequence);
+        // _tile = null;
 
     }
 
     private var _ctx :GameContext;
     private var _name :String;
     private var _sprite :ImageSprite;
-    private var _moveSpeed :Float = 300;
+    private var _moveSpeed :Float = 5;
     private var _script :Script;
     private var _moveToX :Float;
     private var _moveToY :Float;
     public var _tile :Entity;
+    private var _movePath :Array<Entity>;
     public var onWin :Signal0 = new Signal0();
 }

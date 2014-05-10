@@ -114,10 +114,10 @@ class LevelMap extends Component
                         // if (empty) return;
                         var player = playerEntity.get(Player);
                         if (player._tile == null) return;
-                        var playerTileData = player._tile.get(TileData);
-                        var playerTileX = playerTileData.tileX;
-                        var playerTileY = playerTileData.tileY;
-                        var playerSprite = playerEntity.get(Sprite);
+                        // var playerTileData = player._tile.get(TileData);
+                        // var playerTileX = playerTileData.tileX;
+                        // var playerTileY = playerTileData.tileY;
+                        // var playerSprite = playerEntity.get(Sprite);
                         var path = getPathTo(tileX, tileY);
                         trace("path length", path.length);
                         player.move(path);
