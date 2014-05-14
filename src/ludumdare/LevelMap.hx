@@ -171,10 +171,14 @@ class LevelMap extends Component
         }
 
         // Create the player's sprite
-        var player = new Player(_ctx, "player/player");
+        var player = new Player(_ctx, "player/star");
         playerEntity = new Entity().add(player);
         owner.addChild(playerEntity);
         owner.addChild(emitterEntity);
+
+        player.onMoved.connect(function() {
+            _ctx.pack.getSound("sounds/moves/move" + Math.floor(1 + Math.random() * 6)).play();
+        });
 
         var playerSprite = playerEntity.get(Sprite);
         playerSprite.setAlpha(0.0);
@@ -198,8 +202,8 @@ class LevelMap extends Component
                 playerSprite.setXY(startTileSprite.x._, startTileSprite.y._);
                 playerSprite.setScale(5.0);
                 player.move([startTile]);
-                playerSprite.scaleX.animateTo(0.75, 1, flambe.animation.Ease.bounceOut);
-                playerSprite.scaleY.animateTo(0.75, 1, flambe.animation.Ease.bounceOut);
+                playerSprite.scaleX.animateTo(0.15, 1, flambe.animation.Ease.bounceOut);
+                playerSprite.scaleY.animateTo(0.15, 1, flambe.animation.Ease.bounceOut);
                 playerSprite.alpha.animateTo(1, 1, flambe.animation.Ease.bounceOut);
             }),
             new Delay(0.3),

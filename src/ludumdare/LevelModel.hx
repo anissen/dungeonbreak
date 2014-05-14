@@ -43,9 +43,10 @@ class LevelModel extends Component
         owner.addChild(_worldLayer);
 
         // Add a scrolling ocean background
-        var background = new PatternSprite(_ctx.pack.getTexture("backgrounds/background"), System.stage.width, System.stage.height);
+        var background = new PatternSprite(_ctx.pack.getTexture("backgrounds/skulls2"), System.stage.width, System.stage.height);
         background.setScale(2);
-        _worldLayer.addChild(new Entity().add(background).add(new BackgroundScroller(100)));
+        background.disablePixelSnapping();
+        _worldLayer.addChild(new Entity().add(background).add(new BackgroundScroller(10, 30)));
         _worldLayer.addChild(_mapLayer = new Entity());
 
         loadMap(_levelIndex);

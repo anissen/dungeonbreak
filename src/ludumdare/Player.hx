@@ -56,6 +56,7 @@ class Player extends Component
         var diffY = tileSprite.y._ - _sprite.y._;
         var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
         if (distance < 10) {
+            onMoved.emit();
             if (nextTile.has(GoalTile)) {
                 onWin.emit();
             }
@@ -108,4 +109,5 @@ class Player extends Component
     public var _tile :Entity;
     private var _movePath :Array<Entity>;
     public var onWin :Signal0 = new Signal0();
+    public var onMoved :Signal0 = new Signal0();
 }
