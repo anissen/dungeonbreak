@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen.game;
 
 import flambe.animation.Ease;
 import flambe.Component;

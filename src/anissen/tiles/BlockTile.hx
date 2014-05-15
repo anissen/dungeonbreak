@@ -1,10 +1,11 @@
 
-package ludumdare;
+package anissen.tiles;
 
 import flambe.Component;
 import flambe.display.ImageSprite;
+import anissen.game.*;
 
-class GrassTile extends Component
+class BlockTile extends Component
 {
     public function new (ctx :GameContext, x :Int, y :Int, rotation :Int)
     {
@@ -16,17 +17,17 @@ class GrassTile extends Component
 
     override public function onAdded ()
     {
-        var texture = _ctx.pack.getTexture("tiles/grass");
+        var texture = _ctx.pack.getTexture("tiles/block");
         var sprite = new ImageSprite(texture);
         owner.add(sprite);
 
         var tileData = new TileData();
         tileData.tileX = _tileX;
         tileData.tileY = _tileY;
-        tileData.topOpen    = true;
-        tileData.bottomOpen = true;
-        tileData.leftOpen   = true;
-        tileData.rightOpen  = true;
+        tileData.topOpen    = false;
+        tileData.bottomOpen = false;
+        tileData.leftOpen   = false;
+        tileData.rightOpen  = false;
         owner.add(tileData);
     }
 

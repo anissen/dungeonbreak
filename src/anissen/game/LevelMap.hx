@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen.game;
 
 import flambe.animation.Ease;
 import flambe.Component;
@@ -19,6 +19,7 @@ import flambe.display.EmitterSprite;
 import flambe.display.EmitterMold;
 import flambe.display.EmitterSprite;
 import flambe.util.Value;
+import anissen.tiles.*;
 
 /** Logic for tile map. */
 class LevelMap extends Component

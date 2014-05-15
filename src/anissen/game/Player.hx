@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen.game;
 
 import flambe.animation.Ease;
 import flambe.Component;
@@ -15,6 +15,7 @@ import flambe.sound.Sound;
 import flambe.sound.Playback;
 import flambe.util.Signal0;
 import flambe.display.EmitterSprite;
+import anissen.tiles.*;
 
 /** Logic for player. */
 class Player extends Component

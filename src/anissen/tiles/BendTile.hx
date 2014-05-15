@@ -1,10 +1,11 @@
 
-package ludumdare;
+package anissen.tiles;
 
 import flambe.Component;
 import flambe.display.ImageSprite;
+import anissen.game.*;
 
-class GoalTile extends Component
+class BendTile extends Component
 {
     public function new (ctx :GameContext, x :Int, y :Int, rotation :Int)
     {
@@ -16,17 +17,17 @@ class GoalTile extends Component
 
     override public function onAdded ()
     {
-        var texture = _ctx.pack.getTexture("tiles/goal");
+        var texture = _ctx.pack.getTexture("tiles/bend");
         var sprite = new ImageSprite(texture);
         owner.add(sprite);
 
         var tileData = new TileData();
         tileData.tileX = _tileX;
         tileData.tileY = _tileY;
-        tileData.topOpen    = (_rotation == 0);
-        tileData.bottomOpen = (_rotation == 2);
-        tileData.leftOpen   = (_rotation == 3);
-        tileData.rightOpen  = (_rotation == 1);
+        tileData.topOpen    = (_rotation == 0 || _rotation == 3);
+        tileData.bottomOpen = (_rotation == 1 || _rotation == 2);
+        tileData.leftOpen   = (_rotation == 2 || _rotation == 3);
+        tileData.rightOpen  = (_rotation == 0 || _rotation == 1);
         owner.add(tileData);
     }
 

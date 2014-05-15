@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen;
 
 import flambe.Entity;
 import flambe.System;
@@ -8,6 +8,7 @@ import flambe.asset.Manifest;
 import flambe.display.FillSprite;
 import flambe.display.ImageSprite;
 import flambe.scene.Director;
+import anissen.game.GameContext;
 
 class Main
 {

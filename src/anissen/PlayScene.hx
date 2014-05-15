@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen;
 
 import flambe.animation.Ease;
 import flambe.display.Sprite;
@@ -13,6 +13,7 @@ import flambe.display.ImageSprite;
 import flambe.display.TextSprite;
 import flambe.display.Font;
 import flambe.debug.FpsDisplay;
+import anissen.game.*;
 
 class PlayScene
 {

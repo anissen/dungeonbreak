@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen.game;
 
 import flambe.Component;
 import flambe.animation.AnimatedFloat;

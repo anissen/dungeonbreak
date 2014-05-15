@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen;
 
 import flambe.Entity;
 import flambe.input.PointerEvent;
@@ -11,6 +11,7 @@ import flambe.display.Sprite;
 import flambe.display.TextSprite;
 import flambe.scene.Scene;
 import flambe.util.Promise;
+import anissen.game.*;
 
 class PromptScene
 {

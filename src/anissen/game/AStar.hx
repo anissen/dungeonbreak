@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen.game;
 
 import haxe.ds.StringMap;
 

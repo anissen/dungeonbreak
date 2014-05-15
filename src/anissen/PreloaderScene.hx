@@ -1,5 +1,5 @@
 
-package ludumdare;
+package anissen;
 
 import flambe.Entity;
 import flambe.System;
