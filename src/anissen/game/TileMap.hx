@@ -140,6 +140,10 @@ class TileMap
     }
     */
 
+    public function getRows() {
+        return tiles;
+    }
+
     public function getRow(index :Int) {
         return tiles[index];
     }

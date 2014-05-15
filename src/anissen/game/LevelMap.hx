@@ -276,38 +276,32 @@ class LevelMap extends Component
         return true;
     }
 
-    function moveRow(index :Int, direction :Float) {
-        tilemap.moveRow(index, direction);
-        var count = 0;
-        for (tile in tilemap.getRow(index)) {
-            var tileData = tile.get(TileData);
-            tileData.tileX = count;
-            var sprite = tile.get(ImageSprite);
-            sprite.x.animateTo(tilemap.tileToView(count), 1, Ease.elasticOut);
-            count++;
-        }
+    function shake(x :Float, y :Float, duration :Float) {
         var shakeScript = new Script();
         owner.add(shakeScript);
-        shakeScript.run(new Shake(2, 1, 0.4));
+        shakeScript.run(new Shake(x, y, duration));
+    }
+
+    function moveRow(index :Int, direction :Float) {
+        tilemap.moveRow(index, direction);
+        centerTiles();
+        shake(2, 1, 0.4);
     }
 
     function moveColumn(index :Int, direction :Float) {
-        var column = tilemap.getColumn(index);
-        if (direction > 0) {
-            column.unshift(column.pop());
-        } else if (direction < 0) {
-            column.push(column.shift());
+        tilemap.moveColumn(index, direction);
+        centerTiles();
+        shake(1, 2, 0.4);
+    }
+
+    function centerTiles() {
+        for (row in tilemap.getRows()) {
+            for (tile in row) {
+                var tileData = tile.get(TileData);
+                var sprite = tile.get(ImageSprite);
+                sprite.x.animateTo(tilemap.tileToView(tileData.tileX), 1, Ease.elasticOut);
+                sprite.y.animateTo(tilemap.tileToView(tileData.tileY), 1, Ease.elasticOut);
+            }
         }
-        for (y in 0...column.length) {
-            var tile = column[y];
-            var tileData = tile.get(TileData);
-            tileData.tileY = y;
-            var sprite = tile.get(ImageSprite);
-            sprite.y.animateTo(tilemap.tileToView(y), 1, Ease.elasticOut);
-            tilemap.setTile(tile, index, y);
-        }
-        var shakeScript = new Script();
-        owner.add(shakeScript);
-        shakeScript.run(new Shake(2, 1, 0.4));
     }
 }
