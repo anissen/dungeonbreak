@@ -47,8 +47,8 @@ class LevelMap extends Component
         tilemap.init();
 
         var mouseDown = false;
-        var startTileX :Float = 0; 
-        var startTileY :Float = 0;
+        var startTileX :Int = 0; 
+        var startTileY :Int = 0;
 
         var emitterMold :EmitterMold = new EmitterMold(_ctx.pack, "particles/explode");
         var emitter :EmitterSprite = emitterMold.createEmitter();
@@ -104,6 +104,12 @@ class LevelMap extends Component
                     startTileX = tileData.tileX;
                     startTileY = tileData.tileY;
                 });
+                tileSprite.pointerMove.connect(function(event :PointerEvent) {
+                    if (!mouseDown) return;
+                    startTileX = tileData.tileX;
+                    startTileY = tileData.tileY;
+                    displaceRow(startTileY, event.viewX - tilemap.tileToView(startTileX));
+                });
                 tileSprite.pointerUp.connect(function(event :PointerEvent) {
                     if (!mouseDown) return;
 
@@ -111,24 +117,10 @@ class LevelMap extends Component
                     var tileX = tileData.tileX;
                     var tileY = tileData.tileY;
                     if (Math.abs(tileX - startTileX) == 0 && Math.abs(tileY - startTileY) == 0) {
-                        // TODO: particle effect?
-                        // if (empty) return;
                         var player = playerEntity.get(Player);
                         if (player._tile == null) return;
-                        // var playerTileData = player._tile.get(TileData);
-                        // var playerTileX = playerTileData.tileX;
-                        // var playerTileY = playerTileData.tileY;
-                        // var playerSprite = playerEntity.get(Sprite);
                         var path = getPathTo(tileX, tileY);
-                        trace("path length", path.length);
                         player.move(path);
-                        // if (Math.abs(playerTileX - tileX) + Math.abs(playerTileY - tileY) == 1) {
-                        //     if (canMoveToTile(playerTileData, tileData)) {
-                        //         player.moveToTile(tileSprite.owner);
-                        //         _ctx.playJump();
-                        //         moves._++;
-                        //     }
-                        // }
                         return;
                     }
                     if (Math.abs(tileX - startTileX) != 0 && Math.abs(tileY - startTileY) != 0) return;
@@ -139,10 +131,9 @@ class LevelMap extends Component
                                 var shakeScript = new Script();
                                 tile.add(shakeScript);
                                 shakeScript.run(new Shake(5, 5, 0.5));
-                                emitter.setXY(tile.get(Sprite).x._, tile.get(Sprite).y._);
-                                emitter.restart();
                                 // _ctx.playHurt();
                                 hasBlock = true;
+                                break;
                             }
                         }
                         if (hasBlock) return;
@@ -156,10 +147,9 @@ class LevelMap extends Component
                                 var shakeScript = new Script();
                                 tile.add(shakeScript);
                                 shakeScript.run(new Shake(5, 5, 0.5));
-                                emitter.setXY(tile.get(Sprite).x._, tile.get(Sprite).y._);
-                                emitter.restart();
                                 // _ctx.playHurt();
                                 hasBlock = true;
+                                break;
                             }
                         }
                         if (hasBlock) return;
@@ -286,6 +276,14 @@ class LevelMap extends Component
         tilemap.moveRow(index, direction);
         centerTiles();
         shake(2, 1, 0.4);
+    }
+
+    function displaceRow(index :Int, amount :Float) {
+        for (tile in tilemap.getRow(index)) {
+            var tileData = tile.get(TileData);
+            var sprite = tile.get(ImageSprite);
+            sprite.x._ = tilemap.tileToView(tileData.tileX) + amount;
+        }
     }
 
     function moveColumn(index :Int, direction :Float) {
