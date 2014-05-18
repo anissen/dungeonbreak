@@ -62,9 +62,14 @@ class TileMap
         tiles[y][x] = tile;
     }
 
-    public function tileToView(position :Int) :Int
+    public function tileToView(tilePosition :Int) :Int
     {
-        return Math.round((position * TILE_SIZE) + TILE_SIZE / 2);
+        return Math.round((tilePosition * TILE_SIZE) + TILE_SIZE / 2);
+    }
+
+    public function viewToTile(viewPosition :Int) :Int
+    {
+        return Math.floor((viewPosition + TILE_SIZE / 2) / TILE_SIZE);
     }
 
     public function getHeight() :Int

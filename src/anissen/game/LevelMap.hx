@@ -46,9 +46,7 @@ class LevelMap extends Component
     {
         tilemap.init();
 
-        var mouseDown = false;
-        var startTileX :Int = 0; 
-        var startTileY :Int = 0;
+        var movingTile = null;
 
         var emitterMold :EmitterMold = new EmitterMold(_ctx.pack, "particles/explode");
         var emitter :EmitterSprite = emitterMold.createEmitter();
@@ -100,16 +98,39 @@ class LevelMap extends Component
                 var tileData = entity.get(TileData);
 
                 tileSprite.pointerDown.connect(function(event :PointerEvent) {
-                    mouseDown = true;
-                    startTileX = tileData.tileX;
-                    startTileY = tileData.tileY;
+                    if (movingTile != null && movingTile != entity) return;
+                    movingTile = entity;
                 });
                 tileSprite.pointerMove.connect(function(event :PointerEvent) {
-                    if (!mouseDown) return;
-                    startTileX = tileData.tileX;
-                    startTileY = tileData.tileY;
-                    displaceRow(startTileY, event.viewX - tilemap.tileToView(startTileX));
+                    if (movingTile == null || movingTile != entity) return;
+                    var displacementX :Float = event.viewX - tilemap.tileToView(tileData.tileX);
+                    var displacementY :Float = event.viewY - tilemap.tileToView(tileData.tileY);
+                    if (Math.abs(displacementX) > Math.abs(displacementY)) {
+                        displaceColumn(tileData.tileX, 0);
+                        displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
+                    } else {
+                        displaceRow(tileData.tileY, 0);
+                        displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
+                    }
                 });
+                tileSprite.pointerUp.connect(function(event :PointerEvent) {
+                    if (movingTile == null) return;
+
+                    var displacementX :Int = tilemap.viewToTile(Math.floor(event.viewX - tilemap.tileToView(tileData.tileX)));
+                    var displacementY :Int = tilemap.viewToTile(Math.floor(event.viewY - tilemap.tileToView(tileData.tileY)));
+                    if (displacementX != 0) {
+                        moveRow(tileData.tileY, displacementX);
+                    } else if (displacementY != 0) {
+                        moveColumn(tileData.tileX, displacementY);
+                    } else if (movingTile == entity) {
+                        var player = playerEntity.get(Player);
+                        if (player._tile == null) return;
+                        var path = getPathTo(tileData.tileX, tileData.tileY);
+                        player.move(path);
+                    }
+                    movingTile = null;
+                });
+                /*
                 tileSprite.pointerUp.connect(function(event :PointerEvent) {
                     if (!mouseDown) return;
 
@@ -158,6 +179,7 @@ class LevelMap extends Component
                         moves._++;
                     }
                 });
+                */
             }
         }
 
@@ -283,6 +305,14 @@ class LevelMap extends Component
             var tileData = tile.get(TileData);
             var sprite = tile.get(ImageSprite);
             sprite.x._ = tilemap.tileToView(tileData.tileX) + amount;
+        }
+    }
+
+    function displaceColumn(index :Int, amount :Float) {
+        for (tile in tilemap.getColumn(index)) {
+            var tileData = tile.get(TileData);
+            var sprite = tile.get(ImageSprite);
+            sprite.y._ = tilemap.tileToView(tileData.tileY) + amount;
         }
     }
 
