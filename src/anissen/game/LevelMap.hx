@@ -38,14 +38,12 @@ class LevelMap extends Component
     {
         _ctx = ctx;
         _file = file;
-        tilemap = new TileMap(tileSize, width, height);
+        // tilemap = new TileMap(tileSize, width, height);
         moves = new Value<Int>(0);
     }
 
     override public function onAdded ()
     {
-        tilemap.init();
-
         var movingTile = null;
 
         var emitterMold :EmitterMold = new EmitterMold(_ctx.pack, "particles/explode");
@@ -53,83 +51,83 @@ class LevelMap extends Component
         var emitterEntity :Entity = new Entity().add(emitter);
 
         // TODO: Should be:
-        // tilemap = levelLoader.load(_file);
+        tilemap = LevelLoader.load(_ctx, _file);
 
-        var rawlevel :String = _ctx.pack.getFile(_file).toString();
-        var lines = rawlevel.split("\n");
-
+        var tileCount = 0;
         for (y in 0...tilemap.getHeight()) {
             for (x in 0...tilemap.getWidth()) {
                 var entity = tilemap.getTile(x, y);
-                var rotation = Math.floor(Math.random() * 4);
-                var random = Math.random();
-
-                var type = lines[y].charAt(x);
-                switch (type) {
-                    case "│": entity.add(new StraightTile(_ctx, x, y, rotation = 0));
-                    case "─": entity.add(new StraightTile(_ctx, x, y, rotation = 1));
-                    case "└": entity.add(new BendTile(_ctx, x, y, rotation = 0));
-                    case "┌": entity.add(new BendTile(_ctx, x, y, rotation = 1));
-                    case "┐": entity.add(new BendTile(_ctx, x, y, rotation = 2));
-                    case "┘": entity.add(new BendTile(_ctx, x, y, rotation = 3));
-                    case " ": entity.add(new EmptyTile(_ctx, x, y, rotation));
-                    case "╧": entity.add(new GoalTile(_ctx, x, y, rotation = 0));
-                    case "╟": entity.add(new GoalTile(_ctx, x, y, rotation = 1));
-                    case "╤": entity.add(new GoalTile(_ctx, x, y, rotation = 2));
-                    case "╢": entity.add(new GoalTile(_ctx, x, y, rotation = 3));
-                    case "G": entity.add(new GrassTile(_ctx, x, y, rotation));
-                    case "█": entity.add(new BlockTile(_ctx, x, y, rotation));
-                    default: trace("Unkown tile type: ", type);
-                }
-
-                var tileSprite = entity.get(Sprite);
-                tileSprite.centerAnchor();
-                tileSprite.setXY(tilemap.getViewWidth() / 2, tilemap.getViewHeight() / 2);
-                tileSprite.x.animateTo(tilemap.tileToView(x), 1 + Math.random(), Ease.elasticOut);
-                tileSprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
-                tileSprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                tileSprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                var rotations = [0.0, 90.0, 180.0, 270.0];
-                tileSprite.rotation.animateTo(rotations[rotation], 1 + Math.random(), Ease.elasticOut);
-
-                entity.add(tileSprite);
                 owner.addChild(entity);
+                // var rotation = Math.floor(Math.random() * 4);
+                // var random = Math.random();
 
-                var tileData = entity.get(TileData);
+                // var type :Int = layerData[tileCount++];
+                // // trace("type: '" + type + "'");
+                // switch (type) {
+                //     case 172: entity.add(new StraightTile(_ctx, x, y, rotation = 0));
+                //     case 170: entity.add(new StraightTile(_ctx, x, y, rotation = 1));
+                //     case 14: entity.add(new BendTile(_ctx, x, y, rotation = 0));
+                //     // case xx: entity.add(new BendTile(_ctx, x, y, rotation = 1));
+                //     // case 170: entity.add(new BendTile(_ctx, x, y, rotation = 2));
+                //     // case "┘": entity.add(new BendTile(_ctx, x, y, rotation = 3));
+                //     case 0: entity.add(new EmptyTile(_ctx, x, y, rotation));
+                //     // case "╧": entity.add(new GoalTile(_ctx, x, y, rotation = 0));
+                //     // case "╟": entity.add(new GoalTile(_ctx, x, y, rotation = 1));
+                //     case 2: entity.add(new GoalTile(_ctx, x, y, rotation = 2));
+                //     // case "╢": entity.add(new GoalTile(_ctx, x, y, rotation = 3));
+                //     // case "G": entity.add(new GrassTile(_ctx, x, y, rotation));
+                //     case 1: entity.add(new BlockTile(_ctx, x, y, rotation));
+                //     default: trace("Unkown tile type: ", type);
+                // }
 
-                tileSprite.pointerDown.connect(function(event :PointerEvent) {
-                    if (movingTile != null && movingTile != entity) return;
-                    movingTile = entity;
-                });
-                tileSprite.pointerMove.connect(function(event :PointerEvent) {
-                    if (movingTile == null || movingTile != entity) return;
-                    var displacementX :Float = event.viewX - tilemap.tileToView(tileData.tileX);
-                    var displacementY :Float = event.viewY - tilemap.tileToView(tileData.tileY);
-                    if (Math.abs(displacementX) > Math.abs(displacementY)) {
-                        displaceColumn(tileData.tileX, 0);
-                        displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
-                    } else {
-                        displaceRow(tileData.tileY, 0);
-                        displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
-                    }
-                });
-                tileSprite.pointerUp.connect(function(event :PointerEvent) {
-                    if (movingTile == null) return;
+                // var tileSprite = entity.get(Sprite);
+                // tileSprite.centerAnchor();
+                // tileSprite.setXY(tilemap.getViewWidth() / 2, tilemap.getViewHeight() / 2);
+                // tileSprite.x.animateTo(tilemap.tileToView(x), 1 + Math.random(), Ease.elasticOut);
+                // tileSprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
+                // tileSprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
+                // tileSprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
+                // var rotations = [0.0, 90.0, 180.0, 270.0];
+                // tileSprite.rotation.animateTo(rotations[rotation], 1 + Math.random(), Ease.elasticOut);
 
-                    var displacementX :Int = tilemap.viewToTile(Math.floor(event.viewX - tilemap.tileToView(tileData.tileX)));
-                    var displacementY :Int = tilemap.viewToTile(Math.floor(event.viewY - tilemap.tileToView(tileData.tileY)));
-                    if (displacementX != 0) {
-                        moveRow(tileData.tileY, displacementX);
-                    } else if (displacementY != 0) {
-                        moveColumn(tileData.tileX, displacementY);
-                    } else if (movingTile == entity) {
-                        var player = playerEntity.get(Player);
-                        if (player._tile == null) return;
-                        var path = getPathTo(tileData.tileX, tileData.tileY);
-                        player.move(path);
-                    }
-                    movingTile = null;
-                });
+                // entity.add(tileSprite);
+                // owner.addChild(entity);
+
+                // var tileData = entity.get(TileData);
+
+                // tileSprite.pointerDown.connect(function(event :PointerEvent) {
+                //     if (movingTile != null && movingTile != entity) return;
+                //     movingTile = entity;
+                // });
+                // tileSprite.pointerMove.connect(function(event :PointerEvent) {
+                //     if (movingTile == null || movingTile != entity) return;
+                //     var displacementX :Float = event.viewX - tilemap.tileToView(tileData.tileX);
+                //     var displacementY :Float = event.viewY - tilemap.tileToView(tileData.tileY);
+                //     if (Math.abs(displacementX) > Math.abs(displacementY)) {
+                //         displaceColumn(tileData.tileX, 0);
+                //         displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
+                //     } else {
+                //         displaceRow(tileData.tileY, 0);
+                //         displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
+                //     }
+                // });
+                // tileSprite.pointerUp.connect(function(event :PointerEvent) {
+                //     if (movingTile == null) return;
+
+                //     var displacementX :Int = tilemap.viewToTile(Math.floor(event.viewX - tilemap.tileToView(tileData.tileX)));
+                //     var displacementY :Int = tilemap.viewToTile(Math.floor(event.viewY - tilemap.tileToView(tileData.tileY)));
+                //     if (displacementX != 0) {
+                //         moveRow(tileData.tileY, displacementX);
+                //     } else if (displacementY != 0) {
+                //         moveColumn(tileData.tileX, displacementY);
+                //     } else if (movingTile == entity) {
+                //         var player = playerEntity.get(Player);
+                //         if (player._tile == null) return;
+                //         var path = getPathTo(tileData.tileX, tileData.tileY);
+                //         player.move(path);
+                //     }
+                //     movingTile = null;
+                // });
                 /*
                 tileSprite.pointerUp.connect(function(event :PointerEvent) {
                     if (!mouseDown) return;
@@ -199,11 +197,11 @@ class LevelMap extends Component
         var startX = 2;
         var startY = 2;
         // HACK to get the players position
-        if (lines.length >= tilemap.getHeight()) {
-            var startStr = lines[tilemap.getHeight()].split(",");
-            startX = Std.parseInt(startStr[0]);
-            startY = Std.parseInt(startStr[1]);
-        }
+        // if (lines.length >= tilemap.getHeight()) {
+        //     var startStr = lines[tilemap.getHeight()].split(",");
+        //     startX = Std.parseInt(startStr[0]);
+        //     startY = Std.parseInt(startStr[1]);
+        // }
 
         var spawnPlayerScript = new Script();
         owner.add(spawnPlayerScript);

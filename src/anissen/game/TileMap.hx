@@ -23,73 +23,66 @@ import flambe.util.Value;
 /** Logic for tile map. */
 class TileMap
 {
-    private var TILE_SIZE :Int;
-    private var HEIGHT :Int;
-    private var WIDTH :Int;
-    private var tiles :Array<Array<Entity>>;
+    private var _tileSize :Int;
+    private var _height :Int;
+    private var _width :Int;
+    private var _tiles :Array<Array<Entity>>;
 
-    public function new (tileSize :Int, width :Int, height :Int)
+    public function new ()
     {
-        TILE_SIZE = tileSize;
-        WIDTH = width;
-        HEIGHT = height;
+        _tileSize = 128; // TODO: HACK!
     }
 
-    public function init ()
+    public function init (width :Int, height :Int)
     {
-        tiles = [
-            for (y in 0...HEIGHT) [ 
-                for (x in 0...WIDTH)
-                    new Entity() 
+        _width = width;
+        _height = height;
+        _tiles = [
+            for (y in 0...height) [ 
+                for (x in 0...width)
+                    new Entity()
             ]
         ];
-
-        // for (y in 0...HEIGHT) {
-        //     for (x in 0...WIDTH) {
-        //         var entity = tiles[y][x];
-        //         // ??
-        //     }
-        // }
     }
 
     public function getTile(x :Int, y :Int) :Entity
     {
-        return tiles[y][x];
+        return _tiles[y][x];
     }
 
     public function setTile(tile :Entity, x :Int, y :Int)
     {
-        tiles[y][x] = tile;
+        _tiles[y][x] = tile;
     }
 
     public function tileToView(tilePosition :Int) :Int
     {
-        return Math.round((tilePosition * TILE_SIZE) + TILE_SIZE / 2);
+        return Math.round((tilePosition * _tileSize) + _tileSize / 2);
     }
 
     public function viewToTile(viewPosition :Int) :Int
     {
-        return Math.floor((viewPosition + TILE_SIZE / 2) / TILE_SIZE);
+        return Math.floor((viewPosition + _tileSize / 2) / _tileSize);
     }
 
     public function getHeight() :Int
     {
-        return HEIGHT;
+        return _height;
     }
 
     public function getWidth() :Int
     {
-        return WIDTH;
+        return _width;
     }
 
     public function getViewHeight() :Int
     {
-        return HEIGHT * TILE_SIZE;
+        return _height * _tileSize;
     }
 
     public function getViewWidth() :Int
     {
-        return WIDTH * TILE_SIZE;
+        return _width * _tileSize;
     }
 
     /*
@@ -133,7 +126,7 @@ class TileMap
         
         var path = AStar.getPath(XYToTileId(playerTileX, playerTileY), XYToTileId(x, y), getNeighbors, getDistance);
         path.shift(); // Remove own position
-        return [for (p in path) { var tile = tileIdToXY(p); tiles[tile.y][tile.x]; }];
+        return [for (p in path) { var tile = tileIdToXY(p); _tiles[tile.y][tile.x]; }];
     }
 
     function canMoveToTile (fromTile :TileData, toTile :TileData) {
@@ -146,23 +139,23 @@ class TileMap
     */
 
     public function getRows() {
-        return tiles;
+        return _tiles;
     }
 
     public function getRow(index :Int) {
-        return tiles[index];
+        return _tiles[index];
     }
 
     public function getColumn(index :Int) {
         var column = new Array<Entity>();
-        for (row in tiles) {
+        for (row in _tiles) {
             column.push(row[index]);
         }
         return column;
     }
 
     public function moveRow(index :Int, direction :Float) {
-        var row = tiles[index];
+        var row = _tiles[index];
         if (direction > 0) {
             row.unshift(row.pop());
         } else if (direction < 0) {
@@ -178,7 +171,7 @@ class TileMap
 
     public function moveColumn(index :Int, direction :Float) {
         var column = new Array<Entity>();
-        for (row in tiles) {
+        for (row in _tiles) {
             column.push(row[index]);
         }
         if (direction > 0) {
@@ -190,7 +183,7 @@ class TileMap
             var tile = column[y];
             var tileData = tile.get(TileData);
             tileData.tileY = y;
-            tiles[y][index] = tile;
+            _tiles[y][index] = tile;
         }
     }
 }
