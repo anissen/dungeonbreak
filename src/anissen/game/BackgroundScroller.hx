@@ -25,10 +25,10 @@ class BackgroundScroller extends Component
         sprite.y._ += dt * yspeed._;
         sprite.x._ += dt * xspeed._;
         while (sprite.y._ > 0) {
-            sprite.y._ -= 400;
+            sprite.y._ -= 800;
         }
         while (sprite.x._ > 0) {
-            sprite.x._ -= 400;
+            sprite.x._ -= 800;
         }
     }
 }
