@@ -1,0 +1,19 @@
+To-do:
+ ☐ Better level format (tiled)
+ ☐ Main menu
+ ☐ Level selection screen
+ ☐ Level completed screen (maybe?)
+ ☐ More levels
+ ☐ Auto reload levels
+ ☐ Add tile layer for showing blocked rows/columns
+ ☐ Haptic feedback on mobile (vibration)
+ ☐ Send statistics 
+ ☐ Rethink style
+ ☐ Better music/sounds
+ ☐ More level mechanics
+ ☐ Save progress 
+ ☐ Better swipe handling
+ ☐ Visual feedback on interactions (swiping/moving)
+ ☐ Better tutorial
+ ☐ Voice over
+ ☐ Remove asset "sources" from /assets directory (to keep package file size low)
