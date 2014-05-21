@@ -106,7 +106,9 @@ var ConsoleLogViewer = (function() {
 	{
 		var alignment = window.location.href.indexOf("console_at_bottom=true") > -1 || window.location.href.indexOf("console_at_bottom=1") > -1 ? "bottom-aligned" : "top-aligned";
 		var div = document.createElement('div');
-		div.innerHTML = ('<div id="debug_console" class="'+alignment+'"><a href="#close" id="debug_console_close_button" class="log-button">x</a><a href="#position" id="debug_console_position_button" class="log-button">&#8597;</a><a href="#pause" id="debug_console_pause_button" class="log-button">&#9658;</a><div id="debug_console_messages"></div></div>');
+		div.id = "debug_console";
+		div.className = alignment;
+		div.innerHTML = ('<a href="#close" id="debug_console_close_button" class="log-button">x</a><a href="#position" id="debug_console_position_button" class="log-button">&#8597;</a><a href="#pause" id="debug_console_pause_button" class="log-button">&#9658;</a><div id="debug_console_messages"></div>');
 		document.getElementsByTagName('body')[0].appendChild(div);
 		
 		document.getElementById("debug_console_close_button").addEventListener("click", function(e) { 
@@ -129,6 +131,7 @@ var ConsoleLogViewer = (function() {
 	ConsoleLogViewer.prototype.addCSS = function()
 	{
 		var css = '#debug_console { background: rgba(0,0,0,.75); font: 10px Arial, sans-serif!important; position:fixed; padding:0; margin:0; z-index:12834567; box-sizing:border-box; pointer-events:none; text-align:left; text-transform:none; }';
+		css += '#debug_console_messages { background:transparent;pointer-events:none; }'
 		css += '#debug_console_button { border:1px solid #fff; position:absolute; z-index:2; }';
 		css += '#debug_console.top-aligned {left:0; right:0; top:0;}';
 		css += '#debug_console.bottom-aligned {left:0; right:0; bottom:0;}';
