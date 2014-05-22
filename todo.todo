@@ -1,19 +1,32 @@
 To-do:
  ☐ Better level format (tiled)
+     ☐ Handle single layer
+     ☐ Handle single tileset
+     ☐ Handle object group
+ ☐ Implement tilemap events
+     ☐ Click on tile
+     ☐ Swipe on tilemap (event arguments: start tile, end tile (?), direction, time)
+ ☐ Visual feedback on interactions
+     ☐ Feedback on swiping
+     ☐ Feedback on moving
  ☐ Main menu
+     ☐ Placeholder art
+     ☐ Play button
+     ☐ Credits button
  ☐ Level selection screen
- ☐ Level completed screen (maybe?)
+     ☐ Grid with 4 x 3 levels
  ☐ More levels
  ☐ Auto reload levels
- ☐ Add tile layer for showing blocked rows/columns
- ☐ Haptic feedback on mobile (vibration)
- ☐ Send statistics 
  ☐ Rethink style
+     ☐ Graphics for all current tiles
+     ☐ Player graphics
  ☐ Better music/sounds
- ☐ More level mechanics
- ☐ Save progress 
- ☐ Better swipe handling
- ☐ Visual feedback on interactions (swiping/moving)
+ ☐ Save/load progress 
+ ☐ Add tile layer for showing blocked rows/columns
  ☐ Better tutorial
  ☐ Voice over
+ ☐ More level mechanics
  ☐ Remove asset "sources" from /assets directory (to keep package file size low)
+ ☐ Send statistics 
+ ☐ Level completed screen (maybe?)
+ ☐ Haptic feedback on mobile (vibration)
