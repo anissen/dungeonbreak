@@ -3,9 +3,13 @@ package anissen.game;
 
 import flambe.animation.Ease;
 import flambe.display.ImageSprite;
+import flambe.Entity;
+import flambe.input.PointerEvent;
 
 class LevelLoader
 {
+    public static var onTileCreated = new flambe.util.Signal1<Entity>();
+
     public static function load (ctx :GameContext, file :String) :TileMap
     {
         var tilemap = new TileMap();
@@ -50,9 +54,21 @@ class LevelLoader
                         sprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
                         sprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
                         entity.add(sprite);
+
+                        sprite.pointerDown.connect(function(event :PointerEvent) {
+                            
+                        });
+
+                        sprite.pointerUp.connect(function(event :PointerEvent) {
+                            // clickTile.emit(entity)
+                        });
+
+                        sprite.pointerMove.connect(function(event :PointerEvent) {
+                            // dragTile.emit(entity)
+                        });
                     }
                     
-                    // onTileCreated.emit(entity);
+                    onTileCreated.emit(entity);
                     // owner.addChild(entity);
                 }
             } else if (layer.type == "objectgroup") {
@@ -61,6 +77,10 @@ class LevelLoader
                     trace("Object: '" + object.name + "' at " + (object.x / tileset.tilewidth) + " x " + (object.y / tileset.tileheight));
                 }
             }
+
+            // owner.pointerUp.connect(function(event :PointerEvent) {
+            //     // swipe.emit(startPos, endPos, time)
+            // });
         }
         
         return tilemap;

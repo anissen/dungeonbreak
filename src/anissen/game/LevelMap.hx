@@ -50,7 +50,9 @@ class LevelMap extends Component
         var emitter :EmitterSprite = emitterMold.createEmitter();
         var emitterEntity :Entity = new Entity().add(emitter);
 
-        // TODO: Should be:
+        LevelLoader.onTileCreated.connect(function(tile) {
+            trace('onTileCreated!');
+        });
         tilemap = LevelLoader.load(_ctx, _file);
 
         var tileCount = 0;
