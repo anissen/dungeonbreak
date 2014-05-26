@@ -1,8 +1,10 @@
 /build/
 
+*.sublime-workspace
 .*.swp
 ._*
 .DS_Store
 RECOVER_*
 node_modules
 webkit
+misc
