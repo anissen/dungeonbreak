@@ -1,0 +1,16 @@
+{
+  "name": "Dungeon Break",
+  "description": "Simple test of Dungeon Break",
+  "version": "0.2",
+  "main": "index.html",
+  "nodejs": false,
+  "window": {
+    "title": "Dungeon Break node webkit test",
+    "toolbar": false,
+    "width": 800,
+    "height": 600,
+    "min_width": 640,
+    "min_height": 480,
+    "position": "center"
+  }
+}
