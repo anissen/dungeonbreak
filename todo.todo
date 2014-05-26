@@ -1,8 +1,11 @@
 To-do:
  ☐ Better level format (tiled)
-     ☐ Handle single layer
-     ☐ Handle single tileset
+     ✔ Handle single layer @done (22-05-14 16:00)
+     ✔ Handle single tileset @done (22-05-14 16:00)
      ☐ Handle object group
+     ☐ Add TileData to tile entity
+     ☐ Emit events for tile/object loading 
+ ☐ Add graphics for remaining tiles
  ☐ Implement tilemap events
      ☐ Click on tile
      ☐ Swipe on tilemap (event arguments: start tile, end tile (?), direction, time)
@@ -18,7 +21,6 @@ To-do:
  ☐ More levels
  ☐ Auto reload levels
  ☐ Rethink style
-     ☐ Graphics for all current tiles
      ☐ Player graphics
  ☐ Better music/sounds
  ☐ Save/load progress 
