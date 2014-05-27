@@ -28,6 +28,9 @@ class TileMap
     private var _width :Int;
     private var _tiles :Array<Array<Entity>>;
 
+    public var onTileClicked = new flambe.util.Signal1<Entity>();
+    public var onTileDragged = new flambe.util.Signal1<Entity>();
+
     public function new ()
     {
         _tileSize = 128; // TODO: HACK!

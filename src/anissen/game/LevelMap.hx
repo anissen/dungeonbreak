@@ -19,6 +19,7 @@ import flambe.display.EmitterSprite;
 import flambe.display.EmitterMold;
 import flambe.display.EmitterSprite;
 import flambe.util.Value;
+import flambe.System;
 import anissen.tiles.*;
 
 /** Logic for tile map. */
@@ -51,9 +52,39 @@ class LevelMap extends Component
         var emitterEntity :Entity = new Entity().add(emitter);
 
         LevelLoader.onTileCreated.connect(function(tile) {
-            trace('onTileCreated!');
+            // if (!tile.has(Sprite)) return;
+            // var tileSprite = tile.get(Sprite);
         });
         tilemap = LevelLoader.load(_ctx, _file);
+
+        tilemap.onTileClicked.connect(function(tile) {
+            var tileData = tile.get(TileData);
+            var player = playerEntity.get(Player);
+            if (player._tile == null) return;
+            var path = getPathTo(tileData.tileX, tileData.tileY);
+            player.move(path);
+        });
+
+            // var displacementX :Int = tilemap.viewToTile(Math.floor(System.pointer.x - tilemap.tileToView(tileData.tileX)));
+            // var displacementY :Int = tilemap.viewToTile(Math.floor(System.pointer.y - tilemap.tileToView(tileData.tileY)));
+            // if (displacementX != 0) {
+            //     moveRow(tileData.tileY, displacementX);
+            // } else if (displacementY != 0) {
+            //     moveColumn(tileData.tileX, displacementY);
+            // } else if (movingTile == entity) {
+
+        tilemap.onTileDragged.connect(function(tile) {
+            var tileData = tile.get(TileData);
+            var displacementX :Float = System.pointer.x - tilemap.tileToView(tileData.tileX);
+            var displacementY :Float = System.pointer.y - tilemap.tileToView(tileData.tileY);
+            if (Math.abs(displacementX) > Math.abs(displacementY)) {
+                displaceColumn(tileData.tileX, 0);
+                displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
+            } else {
+                displaceRow(tileData.tileY, 0);
+                displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
+            }
+        });
 
         var tileCount = 0;
         for (y in 0...tilemap.getHeight()) {
@@ -302,6 +333,7 @@ class LevelMap extends Component
 
     function displaceRow(index :Int, amount :Float) {
         for (tile in tilemap.getRow(index)) {
+            if (!tile.has(Sprite)) continue;
             var tileData = tile.get(TileData);
             var sprite = tile.get(ImageSprite);
             sprite.x._ = tilemap.tileToView(tileData.tileX) + amount;
@@ -310,6 +342,7 @@ class LevelMap extends Component
 
     function displaceColumn(index :Int, amount :Float) {
         for (tile in tilemap.getColumn(index)) {
+            if (!tile.has(Sprite)) continue;
             var tileData = tile.get(TileData);
             var sprite = tile.get(ImageSprite);
             sprite.y._ = tilemap.tileToView(tileData.tileY) + amount;

@@ -3,6 +3,7 @@ package anissen.game;
 
 import flambe.animation.Ease;
 import flambe.display.ImageSprite;
+import flambe.display.Sprite;
 import flambe.Entity;
 import flambe.input.PointerEvent;
 
@@ -31,6 +32,22 @@ class LevelLoader
         var tilesetImage :String = tileset.image;
         var layerTexture = ctx.pack.getTexture("tilesets/" + tilesetImage.split('.png')[0]);
         
+        var mouseDownOnEntity :Entity = null;
+        var dragging = false;
+
+        // System.pointer.up.connect(handlePointerUp);
+        // System.pointer.down.connect(handlePointerDown);
+        flambe.System.pointer.move.connect(function(event :PointerEvent) {
+            if (mouseDownOnEntity == null) return;
+            dragging = true;
+            tilemap.onTileDragged.emit(mouseDownOnEntity);
+        });
+
+        flambe.System.pointer.up.connect(function(event :PointerEvent) {
+            mouseDownOnEntity = null;
+            dragging = false;
+        });
+
         for (layerIndex in 0...layers.length) {
             var layer :Dynamic = layers[layerIndex];
             if (layer.type == "tilelayer") {
@@ -39,34 +56,49 @@ class LevelLoader
                     var y = layer.y + Math.floor(index / layer.width);
                     var entity = tilemap.getTile(x, y);
 
+                    var tileData = new TileData();
+                    tileData.tileX = x;
+                    tileData.tileY = y;
+                    tileData.topOpen    = true;
+                    tileData.bottomOpen = true;
+                    tileData.leftOpen   = true;
+                    tileData.rightOpen  = true;
+                    entity.add(tileData);
+
                     var layerData :Int = layer.data[index];
                     var firstId :Int = tileset.firstgid;
                     var tileType :Int = layerData - firstId;
 
-                    if (tileType >= 0) {
+                    var sprite :Sprite;
+                    if (tileType < 0) {
+                        sprite = new Sprite();
+                    } else {
                         var tileImageX :Int = Math.floor((tileType * tileset.tilewidth) % tileset.imagewidth * tileset.tilewidth);
                         var tileImageY :Int = Math.floor((tileType * tileset.tileheight) / tileset.imageheight  * tileset.tileheight);
-                        var sprite = new ImageSprite(layerTexture.subTexture(tileImageX, tileImageY, tileset.tileheight, tileset.tilewidth));
-                        sprite.centerAnchor();
-                        sprite.setXY(tilemap.getViewWidth() / 2, tilemap.getViewHeight() / 2);
-                        sprite.x.animateTo(tilemap.tileToView(x), 1 + Math.random(), Ease.elasticOut);
-                        sprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
-                        sprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                        sprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                        entity.add(sprite);
-
-                        sprite.pointerDown.connect(function(event :PointerEvent) {
-                            
-                        });
-
-                        sprite.pointerUp.connect(function(event :PointerEvent) {
-                            // clickTile.emit(entity)
-                        });
-
-                        sprite.pointerMove.connect(function(event :PointerEvent) {
-                            // dragTile.emit(entity)
-                        });
+                        sprite = new ImageSprite(layerTexture.subTexture(tileImageX, tileImageY, tileset.tileheight, tileset.tilewidth));
                     }
+
+                    sprite.centerAnchor();
+                    sprite.setXY(tilemap.getViewWidth() / 2, tilemap.getViewHeight() / 2);
+                    sprite.x.animateTo(tilemap.tileToView(x), 1 + Math.random(), Ease.elasticOut);
+                    sprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
+                    sprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
+                    sprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
+                    entity.add(sprite);
+
+                    sprite.pointerDown.connect(function(event :PointerEvent) {
+                        mouseDownOnEntity = entity;
+                    });
+
+                    sprite.pointerUp.connect(function(event :PointerEvent) {
+                        if (mouseDownOnEntity != entity || dragging) return;
+                        tilemap.onTileClicked.emit(entity);
+                    });
+
+                    // sprite.pointerMove.connect(function(event :PointerEvent) {
+                    //     if (mouseDownOnEntity != entity) return;
+                    //     tilemap.onTileDragged.emit(entity);
+                    // });
                     
                     onTileCreated.emit(entity);
                     // owner.addChild(entity);

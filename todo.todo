@@ -4,7 +4,7 @@ To-do:
      ✔ Handle single tileset @done (22-05-14 16:00)
      ☐ Handle object group
      ☐ Add TileData to tile entity
-     ☐ Emit events for tile/object loading 
+     ☐ Emit events for tile/object loading (maybe?)
  ☐ Add graphics for remaining tiles
  ☐ Implement tilemap events
      ☐ Click on tile
