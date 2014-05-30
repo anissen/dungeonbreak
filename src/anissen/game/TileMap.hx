@@ -29,6 +29,7 @@ class TileMap
     private var _tiles :Array<Array<Entity>>;
 
     public var onTileClicked = new flambe.util.Signal1<Entity>();
+    public var onTileDragging = new flambe.util.Signal1<Entity>();
     public var onTileDragged = new flambe.util.Signal1<Entity>();
 
     public function new ()

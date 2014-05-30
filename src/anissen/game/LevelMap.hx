@@ -58,11 +58,10 @@ class LevelMap extends Component
             // var y = tileData.tileY;
             // var rotation = 0;
             switch (tileData.type) {
-                case -1: tile.add(new TilePath(false, false, false, false));
-                case 0: tile.add(new TilePath(true, true, true, true));
+                case -1: tile.add(new TilePath(false, false, false, false));    // Empty
+                case 0: tile.add(new TilePath(false, false, false, false));     // Straight
                 case 1: tile.add(new TilePath(true, true, false, false));
                 case 2: tile.add(new TilePath(false, false, true, true));
-                case 3: tile.add(new TilePath(false, false, true, true));
                 default: trace("Unkown tile type: " + tileData.type);
             }
         });
@@ -76,15 +75,7 @@ class LevelMap extends Component
             player.move(path);
         });
 
-            // var displacementX :Int = tilemap.viewToTile(Math.floor(System.pointer.x - tilemap.tileToView(tileData.tileX)));
-            // var displacementY :Int = tilemap.viewToTile(Math.floor(System.pointer.y - tilemap.tileToView(tileData.tileY)));
-            // if (displacementX != 0) {
-            //     moveRow(tileData.tileY, displacementX);
-            // } else if (displacementY != 0) {
-            //     moveColumn(tileData.tileX, displacementY);
-            // } else if (movingTile == entity) {
-
-        tilemap.onTileDragged.connect(function(tile) {
+        tilemap.onTileDragging.connect(function(tile) {
             var tileData = tile.get(TileData);
             var displacementX :Float = System.pointer.x - tilemap.tileToView(tileData.tileX);
             var displacementY :Float = System.pointer.y - tilemap.tileToView(tileData.tileY);
@@ -94,6 +85,17 @@ class LevelMap extends Component
             } else {
                 displaceRow(tileData.tileY, 0);
                 displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
+            }
+        });
+
+        tilemap.onTileDragged.connect(function(tile) {
+            var tileData = tile.get(TileData);
+            var displacementX :Int = tilemap.viewToTile(Math.floor(System.pointer.x - tilemap.tileToView(tileData.tileX)));
+            var displacementY :Int = tilemap.viewToTile(Math.floor(System.pointer.y - tilemap.tileToView(tileData.tileY)));
+            if (displacementX != 0) {
+                moveRow(tileData.tileY, displacementX);
+            } else if (displacementY != 0) {
+                moveColumn(tileData.tileX, displacementY);
             }
         });
 

@@ -2,12 +2,15 @@
 	"folders":
 	[
 		{
-			"follow_symlinks": true,
 			"path": ".",
+      "follow_symlinks": true,
       "folder_exclude_patterns": [
         "build",
         "icons"
       ]
 		}
-	]
+	],
+  "settings": {
+    "tab_size": 4    
+  }
 }

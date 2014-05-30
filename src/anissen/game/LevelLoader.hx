@@ -46,10 +46,13 @@ class LevelLoader
         flambe.System.pointer.move.connect(function(event :PointerEvent) {
             if (mouseDownOnEntity == null) return;
             dragging = true;
-            tilemap.onTileDragged.emit(mouseDownOnEntity);
+            tilemap.onTileDragging.emit(mouseDownOnEntity);
         });
 
         flambe.System.pointer.up.connect(function(event :PointerEvent) {
+            if (mouseDownOnEntity != null && dragging) {
+                tilemap.onTileDragged.emit(mouseDownOnEntity);
+            }
             mouseDownOnEntity = null;
             dragging = false;
         });
