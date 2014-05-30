@@ -40,10 +40,7 @@ class TileData extends Component
         
     }
 
+    public var type :Int;
     public var tileX :Int;
     public var tileY :Int;
-    public var topOpen :Bool;
-    public var bottomOpen :Bool;
-    public var leftOpen :Bool;
-    public var rightOpen :Bool;
 }

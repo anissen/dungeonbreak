@@ -9,15 +9,21 @@ import flambe.input.PointerEvent;
 
 class LevelLoader
 {
-    public static var onTileCreated = new flambe.util.Signal1<Entity>();
+    public var onTileCreated = new flambe.util.Signal1<Entity>();
+    public var _ctx :GameContext;
 
-    public static function load (ctx :GameContext, file :String) :TileMap
+    public function new (ctx :GameContext)
+    {
+      _ctx = ctx;
+    }
+
+    public function load (file :String) :TileMap
     {
         var tilemap = new TileMap();
 
         var tiledData;
         try {
-            tiledData = haxe.Json.parse(ctx.pack.getFile(file).toString());
+            tiledData = haxe.Json.parse(_ctx.pack.getFile(file).toString());
         } catch (e :Dynamic) {
             trace("[LevelLoader::load] Error loading " + file + ": " + e);
             return tilemap;
@@ -30,7 +36,7 @@ class LevelLoader
         tilemap.init(tiledData.width, tiledData.height);
 
         var tilesetImage :String = tileset.image;
-        var layerTexture = ctx.pack.getTexture("tilesets/" + tilesetImage.split('.png')[0]);
+        var layerTexture = _ctx.pack.getTexture("tilesets/" + tilesetImage.split('.png')[0]);
         
         var mouseDownOnEntity :Entity = null;
         var dragging = false;
@@ -56,18 +62,15 @@ class LevelLoader
                     var y = layer.y + Math.floor(index / layer.width);
                     var entity = tilemap.getTile(x, y);
 
-                    var tileData = new TileData();
-                    tileData.tileX = x;
-                    tileData.tileY = y;
-                    tileData.topOpen    = true;
-                    tileData.bottomOpen = true;
-                    tileData.leftOpen   = true;
-                    tileData.rightOpen  = true;
-                    entity.add(tileData);
-
                     var layerData :Int = layer.data[index];
                     var firstId :Int = tileset.firstgid;
                     var tileType :Int = layerData - firstId;
+
+                    var tileData = new TileData();
+                    tileData.type = tileType;
+                    tileData.tileX = x;
+                    tileData.tileY = y;
+                    entity.add(tileData);
 
                     var sprite :Sprite;
                     if (tileType < 0) {

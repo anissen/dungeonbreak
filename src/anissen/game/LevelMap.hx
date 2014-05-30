@@ -51,12 +51,23 @@ class LevelMap extends Component
         var emitter :EmitterSprite = emitterMold.createEmitter();
         var emitterEntity :Entity = new Entity().add(emitter);
 
-        LevelLoader.onTileCreated.connect(function(tile) {
-            // if (!tile.has(Sprite)) return;
-            // var tileSprite = tile.get(Sprite);
+        var levelLoader = new LevelLoader(_ctx);
+        levelLoader.onTileCreated.connect(function(tile) {
+            var tileData = tile.get(TileData);
+            // var x = tileData.tileX;
+            // var y = tileData.tileY;
+            // var rotation = 0;
+            switch (tileData.type) {
+                case -1: tile.add(new TilePath(false, false, false, false));
+                case 0: tile.add(new TilePath(true, true, true, true));
+                case 1: tile.add(new TilePath(true, true, false, false));
+                case 2: tile.add(new TilePath(false, false, true, true));
+                case 3: tile.add(new TilePath(false, false, true, true));
+                default: trace("Unkown tile type: " + tileData.type);
+            }
         });
-        tilemap = LevelLoader.load(_ctx, _file);
 
+        tilemap = levelLoader.load(_file);
         tilemap.onTileClicked.connect(function(tile) {
             var tileData = tile.get(TileData);
             var player = playerEntity.get(Player);
@@ -273,15 +284,16 @@ class LevelMap extends Component
             return x + "," + y;
         }
         var getNeighbors = function(tileId) {
-            var tile = tileIdToXY(tileId);
-            var x :Int = tile.x;
-            var y :Int = tile.y;
-            var fromTileData = tilemap.getTile(x, y).get(TileData);
+            var tilePos = tileIdToXY(tileId);
+            var x :Int = tilePos.x;
+            var y :Int = tilePos.y;
+            var fromTile = tilemap.getTile(x, y);
+            var fromTileData = fromTile.get(TileData);
 
             var neighbors = new Array<String>();
             var addIfPassable = function(toX :Int, toY :Int) {
-                var toTileData = tilemap.getTile(toX, toY).get(TileData);
-                if (!canMoveToTile(fromTileData, toTileData)) return;
+                var toTile = tilemap.getTile(toX, toY);
+                if (!canMoveToTile(fromTile, toTile)) return;
                 neighbors.push(toX + "," + toY);
             };
             if (x + 1 < tilemap.getWidth()) addIfPassable(x + 1, y);
@@ -311,11 +323,15 @@ class LevelMap extends Component
         
     }
 
-    function canMoveToTile (fromTile :TileData, toTile :TileData) {
-        if (toTile.tileX < fromTile.tileX && (!fromTile.leftOpen   || !toTile.rightOpen))  return false;
-        if (toTile.tileX > fromTile.tileX && (!fromTile.rightOpen  || !toTile.leftOpen))   return false;
-        if (toTile.tileY < fromTile.tileY && (!fromTile.topOpen    || !toTile.bottomOpen)) return false;
-        if (toTile.tileY > fromTile.tileY && (!fromTile.bottomOpen || !toTile.topOpen))    return false;
+    function canMoveToTile (fromTile :Entity, toTile :Entity) {
+        var fromTileData = fromTile.get(TileData);
+        var toTileData = toTile.get(TileData);
+        var fromTilePath = fromTile.get(TilePath);
+        var toTilePath = toTile.get(TilePath);
+        if (toTileData.tileX < fromTileData.tileX && (!fromTilePath.leftOpen   || !toTilePath.rightOpen))  return false;
+        if (toTileData.tileX > fromTileData.tileX && (!fromTilePath.rightOpen  || !toTilePath.leftOpen))   return false;
+        if (toTileData.tileY < fromTileData.tileY && (!fromTilePath.topOpen    || !toTilePath.bottomOpen)) return false;
+        if (toTileData.tileY > fromTileData.tileY && (!fromTilePath.bottomOpen || !toTilePath.topOpen))    return false;
         return true;
     }
 
