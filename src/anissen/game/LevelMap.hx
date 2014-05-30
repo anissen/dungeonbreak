@@ -54,9 +54,6 @@ class LevelMap extends Component
         var levelLoader = new LevelLoader(_ctx);
         levelLoader.onTileCreated.connect(function(tile) {
             var tileData = tile.get(TileData);
-            // var x = tileData.tileX;
-            // var y = tileData.tileY;
-            // var rotation = 0;
             switch (tileData.type) {
                 case -1: // Empty
                 case 0: // Straight
@@ -85,6 +82,7 @@ class LevelMap extends Component
             var tileData = tile.get(TileData);
             var displacementX :Float = System.pointer.x - tilemap.tileToView(tileData.tileX);
             var displacementY :Float = System.pointer.y - tilemap.tileToView(tileData.tileY);
+            // TODO: Check if row/column has a BLOCK tile
             if (Math.abs(displacementX) > Math.abs(displacementY)) {
                 displaceColumn(tileData.tileX, 0);
                 displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
@@ -105,131 +103,10 @@ class LevelMap extends Component
             }
         });
 
-        var tileCount = 0;
         for (y in 0...tilemap.getHeight()) {
             for (x in 0...tilemap.getWidth()) {
                 var entity = tilemap.getTile(x, y);
                 owner.addChild(entity);
-                // var rotation = Math.floor(Math.random() * 4);
-                // var random = Math.random();
-
-                // var type :Int = layerData[tileCount++];
-                // // trace("type: '" + type + "'");
-                // switch (type) {
-                //     case 172: entity.add(new StraightTile(_ctx, x, y, rotation = 0));
-                //     case 170: entity.add(new StraightTile(_ctx, x, y, rotation = 1));
-                //     case 14: entity.add(new BendTile(_ctx, x, y, rotation = 0));
-                //     // case xx: entity.add(new BendTile(_ctx, x, y, rotation = 1));
-                //     // case 170: entity.add(new BendTile(_ctx, x, y, rotation = 2));
-                //     // case "┘": entity.add(new BendTile(_ctx, x, y, rotation = 3));
-                //     case 0: entity.add(new EmptyTile(_ctx, x, y, rotation));
-                //     // case "╧": entity.add(new GoalTile(_ctx, x, y, rotation = 0));
-                //     // case "╟": entity.add(new GoalTile(_ctx, x, y, rotation = 1));
-                //     case 2: entity.add(new GoalTile(_ctx, x, y, rotation = 2));
-                //     // case "╢": entity.add(new GoalTile(_ctx, x, y, rotation = 3));
-                //     // case "G": entity.add(new GrassTile(_ctx, x, y, rotation));
-                //     case 1: entity.add(new BlockTile(_ctx, x, y, rotation));
-                //     default: trace("Unkown tile type: ", type);
-                // }
-
-                // var tileSprite = entity.get(Sprite);
-                // tileSprite.centerAnchor();
-                // tileSprite.setXY(tilemap.getViewWidth() / 2, tilemap.getViewHeight() / 2);
-                // tileSprite.x.animateTo(tilemap.tileToView(x), 1 + Math.random(), Ease.elasticOut);
-                // tileSprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
-                // tileSprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                // tileSprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                // var rotations = [0.0, 90.0, 180.0, 270.0];
-                // tileSprite.rotation.animateTo(rotations[rotation], 1 + Math.random(), Ease.elasticOut);
-
-                // entity.add(tileSprite);
-                // owner.addChild(entity);
-
-                // var tileData = entity.get(TileData);
-
-                // tileSprite.pointerDown.connect(function(event :PointerEvent) {
-                //     if (movingTile != null && movingTile != entity) return;
-                //     movingTile = entity;
-                // });
-                // tileSprite.pointerMove.connect(function(event :PointerEvent) {
-                //     if (movingTile == null || movingTile != entity) return;
-                //     var displacementX :Float = event.viewX - tilemap.tileToView(tileData.tileX);
-                //     var displacementY :Float = event.viewY - tilemap.tileToView(tileData.tileY);
-                //     if (Math.abs(displacementX) > Math.abs(displacementY)) {
-                //         displaceColumn(tileData.tileX, 0);
-                //         displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
-                //     } else {
-                //         displaceRow(tileData.tileY, 0);
-                //         displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
-                //     }
-                // });
-                // tileSprite.pointerUp.connect(function(event :PointerEvent) {
-                //     if (movingTile == null) return;
-
-                //     var displacementX :Int = tilemap.viewToTile(Math.floor(event.viewX - tilemap.tileToView(tileData.tileX)));
-                //     var displacementY :Int = tilemap.viewToTile(Math.floor(event.viewY - tilemap.tileToView(tileData.tileY)));
-                //     if (displacementX != 0) {
-                //         moveRow(tileData.tileY, displacementX);
-                //     } else if (displacementY != 0) {
-                //         moveColumn(tileData.tileX, displacementY);
-                //     } else if (movingTile == entity) {
-                //         var player = playerEntity.get(Player);
-                //         if (player._tile == null) return;
-                //         var path = getPathTo(tileData.tileX, tileData.tileY);
-                //         player.move(path);
-                //     }
-                //     movingTile = null;
-                // });
-                /*
-                tileSprite.pointerUp.connect(function(event :PointerEvent) {
-                    if (!mouseDown) return;
-
-                    mouseDown = false;
-                    var tileX = tileData.tileX;
-                    var tileY = tileData.tileY;
-                    if (Math.abs(tileX - startTileX) == 0 && Math.abs(tileY - startTileY) == 0) {
-                        var player = playerEntity.get(Player);
-                        if (player._tile == null) return;
-                        var path = getPathTo(tileX, tileY);
-                        player.move(path);
-                        return;
-                    }
-                    if (Math.abs(tileX - startTileX) != 0 && Math.abs(tileY - startTileY) != 0) return;
-                    if (Math.abs(tileX - startTileX) != 0) {
-                        var hasBlock = false;
-                        for (tile in tilemap.getRow(tileY)) {
-                            if (tile.has(BlockTile)) {
-                                var shakeScript = new Script();
-                                tile.add(shakeScript);
-                                shakeScript.run(new Shake(5, 5, 0.5));
-                                // _ctx.playHurt();
-                                hasBlock = true;
-                                break;
-                            }
-                        }
-                        if (hasBlock) return;
-                        moveRow(tileY, tileX - startTileX);
-                        // _ctx.playExplosion();
-                        moves._++;
-                    } else if (Math.abs(tileY - startTileY) != 0) {
-                        var hasBlock = false;
-                        for (tile in tilemap.getColumn(tileX)) {
-                            if (tile.has(BlockTile)) {
-                                var shakeScript = new Script();
-                                tile.add(shakeScript);
-                                shakeScript.run(new Shake(5, 5, 0.5));
-                                // _ctx.playHurt();
-                                hasBlock = true;
-                                break;
-                            }
-                        }
-                        if (hasBlock) return;
-                        moveColumn(tileX, tileY - startTileY);
-                        // _ctx.playExplosion();
-                        moves._++;
-                    }
-                });
-                */
             }
         }
 
@@ -248,12 +125,6 @@ class LevelMap extends Component
 
         var startX = 2;
         var startY = 2;
-        // HACK to get the players position
-        // if (lines.length >= tilemap.getHeight()) {
-        //     var startStr = lines[tilemap.getHeight()].split(",");
-        //     startX = Std.parseInt(startStr[0]);
-        //     startY = Std.parseInt(startStr[1]);
-        // }
 
         var spawnPlayerScript = new Script();
         owner.add(spawnPlayerScript);
