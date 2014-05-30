@@ -58,14 +58,13 @@ class LevelMap extends Component
             switch (tileData.type) {
                 case -1: // Empty
                 case 0: // Straight
-                    tile
-                        .add(new TilePath.TopOpen())
+                    tile.add(new TilePath.TopOpen())
                         .add(new TilePath.BottomOpen());
                 case 1: // Bottom/Right bend
-                    tile
-                        .add(new TilePath.BottomOpen())
+                    tile.add(new TilePath.BottomOpen())
                         .add(new TilePath.RightOpen());
                 case 2: // Block
+                    tile.add(new TilePath.Block());
                 default: trace('Unknown tile type: $tileData.type');
             }
         });
@@ -92,11 +91,16 @@ class LevelMap extends Component
             var tileData = tile.get(TileData);
             var displacementX :Float = System.pointer.x - tilemap.tileToView(tileData.tileX);
             var displacementY :Float = System.pointer.y - tilemap.tileToView(tileData.tileY);
-            // TODO: Check if row/column has a BLOCK tile
             if (Math.abs(displacementX) > Math.abs(displacementY)) {
+                for (tile in tilemap.getRow(tileData.tileY)) {
+                    if (tile.has(TilePath.Block)) return;
+                }
                 displaceColumn(tileData.tileX, 0);
                 displaceRow(tileData.tileY, FMath.clamp(displacementX, -128, 128)); // TODO: Don't use hardcoded tile size
             } else {
+                for (tile in tilemap.getColumn(tileData.tileX)) {
+                    if (tile.has(TilePath.Block)) return;
+                }
                 displaceRow(tileData.tileY, 0);
                 displaceColumn(tileData.tileX, FMath.clamp(displacementY, -128, 128)); // TODO: Don't use hardcoded tile size
             }
@@ -107,8 +111,14 @@ class LevelMap extends Component
             var displacementX :Int = tilemap.viewToTile(Math.floor(System.pointer.x - tilemap.tileToView(tileData.tileX)));
             var displacementY :Int = tilemap.viewToTile(Math.floor(System.pointer.y - tilemap.tileToView(tileData.tileY)));
             if (displacementX != 0) {
+                for (tile in tilemap.getRow(tileData.tileY)) {
+                    if (tile.has(TilePath.Block)) return;
+                }
                 moveRow(tileData.tileY, displacementX);
             } else if (displacementY != 0) {
+                for (tile in tilemap.getColumn(tileData.tileX)) {
+                    if (tile.has(TilePath.Block)) return;
+                }
                 moveColumn(tileData.tileX, displacementY);
             }
         });
