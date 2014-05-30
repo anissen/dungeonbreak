@@ -34,3 +34,11 @@ class RightOpen extends Component
 
     }
 }
+
+class Goal extends Component
+{
+    public function new () 
+    {
+
+    }
+}

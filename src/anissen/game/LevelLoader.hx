@@ -10,6 +10,7 @@ import flambe.input.PointerEvent;
 class LevelLoader
 {
     public var onTileCreated = new flambe.util.Signal1<Entity>();
+    public var onObjectParsed = new flambe.util.Signal2<String, Entity>();
     public var _ctx :GameContext;
 
     public function new (ctx :GameContext)
@@ -112,7 +113,12 @@ class LevelLoader
             } else if (layer.type == "objectgroup") {
                 for (objectIndex in 0...layer.objects.length) {
                     var object :Dynamic = layer.objects[objectIndex];
-                    trace("Object: '" + object.name + "' at " + (object.x / tileset.tilewidth) + " x " + (object.y / tileset.tileheight));
+                    var x :Int = Math.floor(object.x / tileset.tilewidth);
+                    var y :Int = Math.floor(object.y / tileset.tileheight);
+
+                    var entity = tilemap.getTile(x, y);
+                    // trace("Object: '" + object.name + "' at " + (object.x / tileset.tilewidth) + " x " + (object.y / tileset.tileheight));
+                    onObjectParsed.emit(object.name, entity);
                 }
             }
 

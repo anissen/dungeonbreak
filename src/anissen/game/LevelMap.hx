@@ -47,11 +47,12 @@ class LevelMap extends Component
     {
         var movingTile = null;
 
-        var emitterMold :EmitterMold = new EmitterMold(_ctx.pack, "particles/explode");
-        var emitter :EmitterSprite = emitterMold.createEmitter();
-        var emitterEntity :Entity = new Entity().add(emitter);
+        // var emitterMold :EmitterMold = new EmitterMold(_ctx.pack, "particles/explode");
+        // var emitter :EmitterSprite = emitterMold.createEmitter();
+        // var emitterEntity :Entity = new Entity().add(emitter);
 
         var levelLoader = new LevelLoader(_ctx);
+
         levelLoader.onTileCreated.connect(function(tile) {
             var tileData = tile.get(TileData);
             switch (tileData.type) {
@@ -65,7 +66,16 @@ class LevelMap extends Component
                         .add(new TilePath.BottomOpen())
                         .add(new TilePath.RightOpen());
                 case 2: // Block
-                default: trace("Unkown tile type: " + tileData.type);
+                default: trace('Unknown tile type: $tileData.type');
+            }
+        });
+
+        var startTile :Entity = null;
+        levelLoader.onObjectParsed.connect(function(name, tile) {
+            switch (name) {
+                case "entrance": startTile = tile;
+                case "exit": tile.add(new TilePath.Goal());
+                default: trace('Unknown object: $name');
             }
         });
 
@@ -114,7 +124,7 @@ class LevelMap extends Component
         var player = new Player(_ctx, "player/star");
         playerEntity = new Entity().add(player);
         owner.addChild(playerEntity);
-        owner.addChild(emitterEntity);
+        // owner.addChild(emitterEntity);
 
         player.onMoved.connect(function() {
             _ctx.pack.getSound("sounds/moves/move" + Math.floor(1 + Math.random() * 6)).play();
@@ -123,15 +133,11 @@ class LevelMap extends Component
         var playerSprite = playerEntity.get(Sprite);
         playerSprite.setAlpha(0.0);
 
-        var startX = 2;
-        var startY = 2;
-
         var spawnPlayerScript = new Script();
         owner.add(spawnPlayerScript);
         spawnPlayerScript.run(new Sequence([
             new Shake(2, 2, 0.5),
             new CallFunction(function() {
-                var startTile = tilemap.getTile(startX, startY); // TODO: Get this information from the level data
                 var startTileSprite = startTile.get(Sprite);
                 playerSprite.setXY(startTileSprite.x._, startTileSprite.y._);
                 playerSprite.setScale(5.0);
@@ -142,10 +148,9 @@ class LevelMap extends Component
             }),
             new Delay(0.3),
             new CallFunction(function() {
-                var startTile = tilemap.getTile(startX, startY);
-                var startTileSprite = startTile.get(Sprite);
-                emitter.setXY(startTileSprite.x._, startTileSprite.y._);
-                emitter.restart();
+                // var startTileSprite = startTile.get(Sprite);
+                // emitter.setXY(startTileSprite.x._, startTileSprite.y._);
+                // emitter.restart();
                 // _ctx.playExplosion();
                 spawnPlayerScript.dispose();
             }),

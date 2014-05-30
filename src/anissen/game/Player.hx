@@ -58,9 +58,9 @@ class Player extends Component
         var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
         if (distance < 10) {
             onMoved.emit();
-            // if (nextTile.has(GoalTile)) {
-            //     onWin.emit();
-            // }
+            if (nextTile.has(TilePath.Goal)) {
+                onWin.emit();
+            }
             _movePath.shift();
             return;
         }
