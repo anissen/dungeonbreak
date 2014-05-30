@@ -1,16 +1,16 @@
 To-do:
- ☐ Better level format (tiled)
+ ✔ Better level format (tiled) @done (30-05-14 23:20)
      ✔ Handle single layer @done (22-05-14 16:00)
      ✔ Handle single tileset @done (22-05-14 16:00)
-     ☐ Handle object group
-     ☐ Add TileData to tile entity
-     ☐ Emit events for tile/object loading (maybe?)
+     ✔ Handle object group @done (30-05-14 23:20)
+     ✔ Add TileData to tile entity @done (30-05-14 23:20)
+     ✔ Emit events for tile/object loading (maybe?) @done (30-05-14 23:20)
  ☐ Add graphics for remaining tiles
- ☐ Implement tilemap events
-     ☐ Click on tile
-     ☐ Swipe on tilemap (event arguments: start tile, end tile (?), direction, time)
+ ✔ Implement tilemap events @done (30-05-14 23:20)
+     ✔ Click on tile @done (30-05-14 23:20)
+     ✔ Swipe on tilemap (event arguments: start tile, end tile (?), direction, time) @done (30-05-14 23:20)
  ☐ Visual feedback on interactions
-     ☐ Feedback on swiping
+     ✔ Feedback on swiping @done (30-05-14 23:20)
      ☐ Feedback on moving
  ☐ Main menu
      ☐ Placeholder art
