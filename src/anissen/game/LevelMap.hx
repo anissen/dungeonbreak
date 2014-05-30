@@ -58,10 +58,16 @@ class LevelMap extends Component
             // var y = tileData.tileY;
             // var rotation = 0;
             switch (tileData.type) {
-                case -1: tile.add(new TilePath(false, false, false, false));    // Empty
-                case 0: tile.add(new TilePath(false, false, false, false));     // Straight
-                case 1: tile.add(new TilePath(true, true, false, false));
-                case 2: tile.add(new TilePath(false, false, true, true));
+                case -1: // Empty
+                case 0: // Straight
+                    tile
+                        .add(new TilePath.TopOpen())
+                        .add(new TilePath.BottomOpen());
+                case 1: // Bottom/Right bend
+                    tile
+                        .add(new TilePath.BottomOpen())
+                        .add(new TilePath.RightOpen());
+                case 2: // Block
                 default: trace("Unkown tile type: " + tileData.type);
             }
         });
@@ -328,12 +334,10 @@ class LevelMap extends Component
     function canMoveToTile (fromTile :Entity, toTile :Entity) {
         var fromTileData = fromTile.get(TileData);
         var toTileData = toTile.get(TileData);
-        var fromTilePath = fromTile.get(TilePath);
-        var toTilePath = toTile.get(TilePath);
-        if (toTileData.tileX < fromTileData.tileX && (!fromTilePath.leftOpen   || !toTilePath.rightOpen))  return false;
-        if (toTileData.tileX > fromTileData.tileX && (!fromTilePath.rightOpen  || !toTilePath.leftOpen))   return false;
-        if (toTileData.tileY < fromTileData.tileY && (!fromTilePath.topOpen    || !toTilePath.bottomOpen)) return false;
-        if (toTileData.tileY > fromTileData.tileY && (!fromTilePath.bottomOpen || !toTilePath.topOpen))    return false;
+        if (toTileData.tileX < fromTileData.tileX && (!fromTile.has(TilePath.LeftOpen) || !toTile.has(TilePath.RightOpen)))  return false;
+        if (toTileData.tileX > fromTileData.tileX && (!fromTile.has(TilePath.RightOpen)  || !toTile.has(TilePath.LeftOpen)))   return false;
+        if (toTileData.tileY < fromTileData.tileY && (!fromTile.has(TilePath.TopOpen)    || !toTile.has(TilePath.BottomOpen))) return false;
+        if (toTileData.tileY > fromTileData.tileY && (!fromTile.has(TilePath.BottomOpen) || !toTile.has(TilePath.TopOpen)))    return false;
         return true;
     }
 
