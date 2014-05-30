@@ -3,19 +3,34 @@ package anissen.game;
 
 import flambe.Component;
 
-class TilePath extends Component
+class TopOpen extends Component
 {
-    // TODO: Make this into a struct instead, so it can be initialize like { left: true, top: true }
-    public function new (top :Bool, bottom :Bool, left :Bool, right :Bool)
+    public function new () 
     {
-        topOpen = top;
-        bottomOpen = bottom;
-        leftOpen = left;
-        rightOpen = right;
-    }
 
-    public var topOpen :Bool;
-    public var bottomOpen :Bool;
-    public var leftOpen :Bool;
-    public var rightOpen :Bool;
+    }
+}
+
+class BottomOpen extends Component
+{
+    public function new () 
+    {
+
+    }
+}
+
+class LeftOpen extends Component
+{
+    public function new () 
+    {
+
+    }
+}
+
+class RightOpen extends Component
+{
+    public function new () 
+    {
+
+    }
 }
