@@ -37,7 +37,7 @@ class LevelLoader
         tilemap.init(tiledData.width, tiledData.height);
 
         var tilesetImage :String = tileset.image;
-        var layerTexture = _ctx.pack.getTexture("tilesets/" + tilesetImage.split('.png')[0]);
+        var layerTexture = _ctx.pack.getTexture("tilesets/" + "tileset"); // TODO: HACK (old: tilesetImage.split('.png')[0])
         
         var mouseDownOnEntity :Entity = null;
         var dragging = false;
