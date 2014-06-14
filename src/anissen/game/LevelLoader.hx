@@ -78,7 +78,7 @@ class LevelLoader
 
                     var sprite :Sprite;
                     if (tileType < 0) {
-                        sprite = new Sprite();
+                        sprite = new ImageSprite(layerTexture.subTexture(128, 128, tileset.tileheight, tileset.tilewidth));
                     } else {
                         var tileImageX :Int = Math.floor((tileType * tileset.tilewidth) % tileset.imagewidth * tileset.tilewidth);
                         var tileImageY :Int = Math.floor((tileType * tileset.tileheight) / tileset.imageheight  * tileset.tileheight);
@@ -91,7 +91,6 @@ class LevelLoader
                     sprite.y.animateTo(tilemap.tileToView(y), 1 + Math.random(), Ease.elasticOut);
                     sprite.scaleX.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
                     sprite.scaleY.animateTo(1.0, 1 + Math.random(), Ease.elasticOut);
-                    entity.add(sprite);
 
                     sprite.pointerDown.connect(function(event :PointerEvent) {
                         mouseDownOnEntity = entity;
@@ -101,6 +100,8 @@ class LevelLoader
                         if (mouseDownOnEntity != entity || dragging) return;
                         tilemap.onTileClicked.emit(entity);
                     });
+
+                    entity.add(sprite);
 
                     // sprite.pointerMove.connect(function(event :PointerEvent) {
                     //     if (mouseDownOnEntity != entity) return;
